@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paisa Pathshala — Learn money, one entry at a time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16233D;
+    --parchment: #EFE9DD;
+    --parchment-line: #DCD4C2;
+    --marigold: #E2A73E;
+    --maroon: #7A2E2E;
+    --slate: #5B6472;
+    --paper: #F7F4EC;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --parchment: #EFE9DD;
+      --paper: #F7F4EC;
+    }
+  }
+  img { max-width: 100%; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* TICKER */
+  .ticker-strip {
+    background: var(--ink); color: var(--parchment); overflow: hidden;
+    padding: 9px 0; padding-top: calc(9px + env(safe-area-inset-top, 0px));
+    white-space: nowrap; position: relative;
+  }
+  .ticker-track {
+    display: inline-flex; animation: ticker-scroll 32s linear infinite;
+  }
+  .ticker-strip:hover .ticker-track { animation-play-state: paused; }
+  .ticker-item {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    padding: 0 26px; font-size: 0.82rem; border-right: 1px solid rgba(239,233,221,0.18);
+  }
+  .ticker-item .ti-label { color: #B9C2D6; }
+  .ticker-item .ti-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ticker-item .ti-chg.pos { color: #7FCB8E; }
+  .ticker-item .ti-chg.neg { color: #E39C9C; }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  header {
+    position: sticky; top: 0; top: env(safe-area-inset-top, 0px);
+    z-index: 10;
+    background: var(--parchment);
+    border-bottom: 1px solid var(--parchment-line);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+  }
+  .brand {
+    font-family: var(--serif); font-weight: 600; font-size: 1.35rem;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .brand span { color: var(--maroon); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--slate); text-decoration: none; font-size: 0.92rem;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: var(--parchment); border: none;
+    padding: 10px 18px; border-radius: 3px; font-family: var(--sans);
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible { background: #0F1830; }
+
+  /* HERO */
+  .hero {
+    padding: 72px 0 88px;
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+    line-height: 1.08; letter-spacing: -0.01em; margin: 0 0 22px;
+    max-width: 12ch;
+  }
+  .hero p.lede {
+    font-size: 1.08rem; color: var(--slate); max-width: 42ch; margin: 0 0 32px;
+  }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--maroon); color: var(--paper); border: none;
+    padding: 14px 24px; border-radius: 3px; font-family: var(--sans);
+    font-size: 0.98rem; font-weight: 600; cursor: pointer;
+  }
+  .btn-primary:hover, .btn-primary:focus-visible { background: #5F2222; }
+  .btn-ghost {
+    background: transparent; color: var(--ink); border: 1px solid var(--ink);
+    padding: 14px 24px; border-radius: 3px; font-family: var(--sans);
+    font-size: 0.98rem; font-weight: 500; cursor: pointer;
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(22,35,61,0.06); }
+
+  /* Ledger card */
+  .ledger {
+    background: var(--paper);
+    border: 1px solid var(--parchment-line);
+    border-radius: 6px;
+    box-shadow: 0 1px 0 var(--parchment-line);
+    overflow: hidden;
+  }
+  .ledger-head {
+    background: var(--ink); color: var(--parchment);
+    padding: 16px 22px; font-family: var(--serif); font-size: 1rem;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .ledger-head small { font-family: var(--sans); color: #B9C2D6; font-size: 0.75rem; }
+  .ledger-rows { padding: 6px 0; }
+  .ledger-row {
+    display: grid; grid-template-columns: 28px 1fr auto; gap: 12px;
+    padding: 13px 22px; border-bottom: 1px solid var(--parchment-line);
+    align-items: center;
+  }
+  .ledger-row:last-child { border-bottom: none; }
+  .ledger-num { color: var(--slate); font-size: 0.82rem; }
+  .ledger-desc { font-size: 0.92rem; }
+  .ledger-desc small { display: block; color: var(--slate); font-size: 0.78rem; margin-top: 2px; }
+  .ledger-amt { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ledger-amt.up { color: #2F6B3A; }
+  .ledger-foot {
+    padding: 16px 22px; background: #F1ECE0; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .ledger-foot .total-label { font-size: 0.82rem; color: var(--slate); }
+  .ledger-foot .total-amt { font-family: var(--serif); font-size: 1.4rem; color: var(--maroon); }
+
+  /* PILLARS */
+  .pillars { padding: 20px 0 80px; }
+  .pillars h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 3vw, 2.2rem);
+    max-width: 18ch; margin: 0 0 40px; line-height: 1.15;
+  }
+  .pillar-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--parchment-line); }
+  .pillar {
+    padding: 28px 26px 28px 0;
+    border-right: 1px solid var(--parchment-line);
+  }
+  .pillar:last-child { border-right: none; }
+  .pillar-mark {
+    font-family: var(--serif); font-size: 0.85rem; color: var(--maroon);
+    display: block; margin-bottom: 14px;
+  }
+  .pillar h3 {
+    font-size: 1.08rem; font-weight: 600; margin: 0 0 10px;
+  }
+  .pillar p {
+    color: var(--slate); font-size: 0.92rem; margin: 0; line-height: 1.55;
+  }
+
+  /* CALCULATOR STRIP */
+  .calc-strip {
+    background: var(--ink); color: var(--parchment);
+    padding: 64px 0;
+  }
+  .calc-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  }
+  .calc-inner h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0 0 16px; max-width: 14ch;
+  }
+  .calc-inner p { color: #C7CEDD; font-size: 0.98rem; max-width: 40ch; margin: 0 0 24px; }
+  .calc-mock {
+    background: var(--paper); color: var(--ink); border-radius: 6px; padding: 26px;
+  }
+  .calc-field { margin-bottom: 18px; }
+  .calc-field label { display: block; font-size: 0.8rem; color: var(--slate); margin-bottom: 6px; }
+  .calc-bar { height: 6px; background: var(--parchment-line); border-radius: 3px; position: relative; }
+  .calc-bar::after {
+    content: ""; position: absolute; left: 0; top: -4px;
+    width: 62%; height: 14px; background: var(--marigold); border-radius: 7px;
+  }
+  .calc-result {
+    margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--parchment-line);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .calc-result span:first-child { font-size: 0.85rem; color: var(--slate); }
+  .calc-result span:last-child { font-family: var(--serif); font-size: 1.6rem; color: var(--maroon); }
+
+  /* TRUST */
+  .trust { padding: 76px 0; }
+  .trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .trust h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0 0 18px; max-width: 14ch;
+  }
+  .trust p { color: var(--slate); font-size: 0.98rem; max-width: 42ch; }
+  .quote {
+    border-left: 3px solid var(--marigold); padding-left: 20px;
+  }
+  .quote p.q {
+    font-family: var(--serif); font-size: 1.2rem; font-style: italic; color: var(--ink);
+    margin: 0 0 12px; line-height: 1.4;
+  }
+  .quote .who { font-size: 0.85rem; color: var(--slate); }
+
+  /* WATCH & LEARN */
+  .watch { padding: 76px 0; background: var(--paper); border-top: 1px solid var(--parchment-line); border-bottom: 1px solid var(--parchment-line); }
+  .watch-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
+  .watch-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0; max-width: 16ch; line-height: 1.15;
+  }
+  .watch-tabs { display: flex; gap: 22px; }
+  .watch-tabs button {
+    background: none; border: none; font-family: var(--sans); font-size: 0.88rem;
+    color: var(--slate); padding: 0 0 6px; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .watch-tabs button.active { color: var(--ink); border-bottom-color: var(--maroon); font-weight: 600; }
+  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .video-card {
+    background: var(--parchment); border: 1px solid var(--parchment-line); border-radius: 6px; overflow: hidden;
+  }
+  .video-thumb {
+    aspect-ratio: 16/9; background: var(--ink); position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-thumb .play {
+    width: 46px; height: 46px; border-radius: 50%; background: rgba(239,233,221,0.92);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-thumb .play::after {
+    content: ""; width: 0; height: 0; margin-left: 3px;
+    border-top: 8px solid transparent; border-bottom: 8px solid transparent;
+    border-left: 13px solid var(--ink);
+  }
+  .video-thumb .dur {
+    position: absolute; bottom: 8px; right: 8px; background: rgba(22,35,61,0.85);
+    color: var(--parchment); font-size: 0.72rem; padding: 2px 6px; border-radius: 3px;
+  }
+  .video-body { padding: 16px 18px; }
+  .video-track { font-size: 0.76rem; color: var(--maroon); margin-bottom: 6px; display: block; }
+  .video-body h3 { font-size: 0.96rem; font-weight: 600; margin: 0 0 6px; line-height: 1.35; }
+  .video-body p { font-size: 0.82rem; color: var(--slate); margin: 0; }
+  .watch-more { text-align: center; margin-top: 32px; }
+
+  @media (max-width: 800px) {
+    .video-grid { grid-template-columns: 1fr; }
+    .watch-tabs { display: none; }
+  }
+
+  /* SCREENER */
+  .screener { padding: 76px 0; }
+  .screener-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 6px; }
+  .screener-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0; max-width: 16ch; line-height: 1.15;
+  }
+  .screener-tabs { display: flex; gap: 20px; }
+  .screener-tabs button {
+    background: none; border: none; font-family: var(--sans); font-size: 0.85rem;
+    color: var(--slate); padding: 0 0 6px; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .screener-tabs button.active { color: var(--ink); border-bottom-color: var(--marigold); font-weight: 600; }
+  .screener-sub { color: var(--slate); font-size: 0.92rem; max-width: 56ch; margin: 14px 0 28px; }
+
+  .screener-table { border: 1px solid var(--parchment-line); border-radius: 6px; overflow: hidden; background: var(--paper); }
+  .sr-head-row, .sr-row {
+    display: grid; grid-template-columns: 2.4fr 1fr 1fr 1fr 1fr; gap: 10px; align-items: center;
+    padding: 14px 18px;
+  }
+  .sr-head-row {
+    background: var(--ink); color: #B9C2D6; font-size: 0.72rem; letter-spacing: 0.02em;
+  }
+  .sr-head-row span:not(:first-child) { text-align: right; }
+  .sr-row { font-size: 0.9rem; }
+  .sr-company { display: flex; flex-direction: column; }
+  .sr-company .ticker { font-size: 0.76rem; color: var(--slate); }
+  .sr-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sr-change { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sr-change.pos { color: #2F6B3A; }
+  .sr-change.neg { color: var(--maroon); }
+
+  .sr-row-wrap { border-top: 1px solid var(--parchment-line); }
+  .sr-row-wrap:first-child { border-top: none; }
+  .sr-actions {
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+    padding: 0 18px 16px;
+  }
+  .broker-pill {
+    font-size: 0.76rem; color: var(--ink); border: 1px solid var(--parchment-line);
+    background: var(--parchment); padding: 6px 12px; border-radius: 20px;
+    text-decoration: none; white-space: nowrap;
+  }
+  .broker-pill:hover, .broker-pill:focus-visible { border-color: var(--maroon); color: var(--maroon); }
+  .sr-actions-label { font-size: 0.72rem; color: var(--slate); margin-right: 4px; align-self: center; }
+
+  .screener-disclaimer {
+    font-size: 0.78rem; color: var(--slate); border-left: 2px solid var(--marigold);
+    padding-left: 12px; margin-top: 24px; max-width: 56ch;
+  }
+
+  @media (max-width: 800px) {
+    .sr-head-row { display: none; }
+    .sr-row { grid-template-columns: 1fr auto; grid-template-areas: "name price" "name change"; }
+    .sr-company { grid-area: name; }
+    .sr-num { grid-area: price; }
+    .sr-change { grid-area: change; }
+    .screener-tabs { display: none; }
+  }
+
+  /* MARKET NEWS */
+  .news { padding: 76px 0; background: var(--paper); border-top: 1px solid var(--parchment-line); border-bottom: 1px solid var(--parchment-line); }
+  .news-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+  .news-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0; max-width: 16ch; line-height: 1.15;
+  }
+  .news-live {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 0.78rem; color: var(--slate);
+  }
+  .news-live .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #2F6B3A;
+  }
+  .news-sub { color: var(--slate); font-size: 0.92rem; max-width: 56ch; margin: 14px 0 28px; }
+  .news-list { border-top: 1px solid var(--parchment-line); }
+  .news-item {
+    display: grid; grid-template-columns: 90px 1fr auto; gap: 18px; align-items: baseline;
+    padding: 18px 4px; border-bottom: 1px solid var(--parchment-line);
+    text-decoration: none; color: inherit;
+  }
+  .news-item:hover, .news-item:focus-visible { background: rgba(226,167,62,0.08); }
+  .news-time { font-size: 0.78rem; color: var(--slate); font-variant-numeric: tabular-nums; }
+  .news-headline { font-size: 0.96rem; line-height: 1.4; }
+  .news-source { font-size: 0.76rem; color: var(--maroon); white-space: nowrap; }
+  .news-disclaimer {
+    font-size: 0.78rem; color: var(--slate); border-left: 2px solid var(--marigold);
+    padding-left: 12px; margin-top: 24px; max-width: 56ch;
+  }
+
+  @media (max-width: 800px) {
+    .news-item { grid-template-columns: 1fr; gap: 4px; }
+    .news-time { order: 1; }
+    .news-headline { order: 2; }
+    .news-source { order: 3; }
+  }
+
+  /* RATIOS HUB */
+  .ratios { padding: 76px 0; }
+  .ratios-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 6px; }
+  .ratios-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0; max-width: 18ch; line-height: 1.15;
+  }
+  .ratios-tabs { display: flex; gap: 20px; flex-wrap: wrap; }
+  .ratios-tabs button {
+    background: none; border: none; font-family: var(--sans); font-size: 0.85rem;
+    color: var(--slate); padding: 0 0 6px; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .ratios-tabs button.active { color: var(--ink); border-bottom-color: var(--maroon); font-weight: 600; }
+  .ratios-sub { color: var(--slate); font-size: 0.92rem; max-width: 58ch; margin: 14px 0 30px; }
+  .ratio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--parchment-line); border: 1px solid var(--parchment-line); border-radius: 6px; overflow: hidden; }
+  .ratio-card { background: var(--paper); padding: 22px 22px 20px; }
+  .ratio-card h3 { font-size: 1rem; font-weight: 600; margin: 0 0 8px; }
+  .ratio-card p { font-size: 0.85rem; color: var(--slate); margin: 0 0 14px; line-height: 1.5; min-height: 2.7em; }
+  .ratio-formula {
+    font-family: var(--sans); font-size: 0.78rem; color: var(--ink); background: var(--parchment);
+    padding: 8px 10px; border-radius: 4px; margin-bottom: 14px;
+  }
+  .ratio-open { font-size: 0.82rem; color: var(--maroon); font-weight: 600; text-decoration: none; }
+
+  @media (max-width: 800px) {
+    .ratio-grid { grid-template-columns: 1fr; }
+    .ratios-tabs { display: none; }
+  }
+
+  /* QUIZ */
+  .quiz-section { padding: 76px 0; background: var(--paper); border-top: 1px solid var(--parchment-line); border-bottom: 1px solid var(--parchment-line); }
+  .quiz-head { max-width: 60ch; margin-bottom: 8px; }
+  .quiz-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0 0 14px; max-width: 18ch; line-height: 1.15;
+  }
+  .quiz-head p { color: var(--slate); font-size: 0.96rem; margin: 0 0 36px; }
+  .quiz-box { max-width: 640px; }
+  .quiz-progress { display: flex; gap: 6px; margin-bottom: 28px; }
+  .quiz-progress span { height: 4px; flex: 1; background: var(--parchment-line); border-radius: 2px; }
+  .quiz-progress span.done { background: var(--marigold); }
+  .quiz-q { display: none; }
+  .quiz-q.active { display: block; }
+  .quiz-q .qnum { font-size: 0.78rem; color: var(--maroon); display: block; margin-bottom: 8px; }
+  .quiz-q h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 500; margin: 0 0 20px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opt {
+    text-align: left; background: var(--parchment); border: 1px solid var(--parchment-line);
+    border-radius: 5px; padding: 14px 16px; font-family: var(--sans); font-size: 0.94rem;
+    color: var(--ink); cursor: pointer;
+  }
+  .quiz-opt:hover, .quiz-opt:focus-visible { border-color: var(--maroon); }
+  .quiz-opt.selected { border-color: var(--maroon); background: rgba(226,167,62,0.14); }
+  .quiz-nav { display: flex; justify-content: space-between; margin-top: 26px; }
+  .quiz-result { display: none; }
+  .quiz-result.active { display: block; }
+  .quiz-result .badge {
+    display: inline-block; background: var(--ink); color: var(--parchment);
+    font-family: var(--serif); font-size: 1rem; padding: 8px 18px; border-radius: 20px; margin-bottom: 18px;
+  }
+  .quiz-result p { color: var(--slate); font-size: 0.96rem; max-width: 54ch; margin: 0 0 14px; }
+  .quiz-result .quiz-notes { font-size: 0.9rem; }
+  .quiz-result .quiz-notes li { margin-bottom: 6px; }
+  .quiz-caution {
+    font-size: 0.78rem; color: var(--slate); border-left: 2px solid var(--marigold);
+    padding-left: 12px; margin-top: 22px; max-width: 54ch;
+  }
+
+  .risk-badge {
+    font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 10px;
+    display: inline-block; white-space: nowrap;
+  }
+  .risk-badge.low { background: rgba(47,107,58,0.14); color: #2F6B3A; }
+  .risk-badge.moderate { background: rgba(226,167,62,0.22); color: #8A6A1E; }
+  .risk-badge.high { background: rgba(122,46,46,0.14); color: var(--maroon); }
+
+  .screener-filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .risk-filter-btn {
+    font-size: 0.82rem; font-family: var(--sans); background: var(--parchment);
+    border: 1px solid var(--parchment-line); border-radius: 20px; padding: 7px 16px; cursor: pointer;
+    color: var(--slate);
+  }
+  .risk-filter-btn.active { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+  .sr-row { grid-template-columns: 2fr 0.9fr 0.9fr 0.9fr 0.9fr 0.9fr; }
+  .sr-head-row { grid-template-columns: 2fr 0.9fr 0.9fr 0.9fr 0.9fr 0.9fr; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(22,35,61,0.55);
+    z-index: 100; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-card {
+    background: var(--paper); border-radius: 8px; max-width: 460px; width: 100%;
+    padding: 32px 30px 28px; position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px; background: none; border: none;
+    font-size: 1.3rem; color: var(--slate); cursor: pointer; line-height: 1;
+  }
+  .modal-card h3 {
+    font-family: var(--serif); font-weight: 500; font-size: 1.3rem; margin: 0 0 12px;
+  }
+  .modal-card p { color: var(--slate); font-size: 0.92rem; margin: 0 0 22px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .modal-note {
+    font-size: 0.76rem; color: var(--slate); margin-top: 18px; border-left: 2px solid var(--marigold);
+    padding-left: 10px;
+  }
+
+  @media (max-width: 800px) {
+    .sr-row, .sr-head-row { grid-template-columns: 1fr auto; }
+  }
+
+  /* PORTFOLIO HEALTH */
+  .phc { padding: 76px 0; }
+  .phc-head { max-width: 60ch; margin-bottom: 32px; }
+  .phc-head h2 {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    margin: 0 0 14px; max-width: 20ch; line-height: 1.15;
+  }
+  .phc-head p { color: var(--slate); font-size: 0.96rem; margin: 0; }
+  .phc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .phc-form { background: var(--paper); border: 1px solid var(--parchment-line); border-radius: 6px; padding: 24px; }
+  .phc-row { display: grid; grid-template-columns: 1fr 90px 32px; gap: 8px; margin-bottom: 10px; align-items: center; }
+  .phc-row select, .phc-row input {
+    font-family: var(--sans); font-size: 0.88rem; padding: 9px 10px; border: 1px solid var(--parchment-line);
+    border-radius: 4px; background: var(--parchment); color: var(--ink);
+  }
+  .phc-remove { background: none; border: none; color: var(--maroon); cursor: pointer; font-size: 1.1rem; }
+  .phc-add { font-size: 0.85rem; color: var(--maroon); background: none; border: none; cursor: pointer; padding: 6px 0 14px; font-weight: 600; }
+  .phc-analyze { width: 100%; margin-top: 8px; }
+
+  .phc-results { display: none; }
+  .phc-results.active { display: block; }
+  .phc-metric { margin-bottom: 20px; }
+  .phc-metric-label { font-size: 0.8rem; color: var(--slate); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .phc-bar-track { height: 10px; background: var(--parchment-line); border-radius: 5px; overflow: hidden; display: flex; }
+  .phc-bar-seg { height: 100%; }
+  .phc-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; font-size: 0.76rem; color: var(--slate); }
+  .phc-legend span.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+
+  .phc-total { font-family: var(--serif); font-size: 1.6rem; color: var(--ink); margin-bottom: 4px; }
+  .phc-total-label { font-size: 0.8rem; color: var(--slate); margin-bottom: 24px; }
+
+  .phc-stress { border-top: 1px solid var(--parchment-line); padding-top: 20px; margin-top: 4px; }
+  .phc-stress h4 { font-size: 0.92rem; font-weight: 600; margin: 0 0 12px; }
+  .phc-stress-row { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 8px 0; border-bottom: 1px dashed var(--parchment-line); }
+  .phc-stress-row span:last-child { font-weight: 600; color: var(--maroon); }
+
+  .phc-notes { margin-top: 22px; }
+  .phc-notes li { font-size: 0.88rem; color: var(--slate); margin-bottom: 8px; line-height: 1.5; }
+
+  .phc-disclaimer {
+    font-size: 0.8rem; color: var(--slate); border-left: 2px solid var(--marigold);
+    padding-left: 12px; margin-top: 22px;
+  }
+
+  @media (max-width: 800px) { .phc-grid { grid-template-columns: 1fr; } }
+
+  footer {
+    background: var(--paper); border-top: 1px solid var(--parchment-line);
+    padding: 44px 0 32px;
+  }
+  .foot-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; }
+  .foot-brand { font-family: var(--serif); font-size: 1.1rem; }
+  .foot-note { color: var(--slate); font-size: 0.82rem; max-width: 42ch; }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding: 44px 0 56px; gap: 36px; }
+    .pillar-list { grid-template-columns: 1fr; }
+    .pillar { border-right: none; border-bottom: 1px solid var(--parchment-line); padding: 22px 0; }
+    .calc-inner, .trust-grid { grid-template-columns: 1fr; gap: 28px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-strip">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="ti-label">NIFTY 50</span><span class="ti-val">24,235.10</span><span class="ti-chg pos">+0.42%</span></span>
+    <span class="ticker-item"><span class="ti-label">SENSEX</span><span class="ti-val">79,940.25</span><span class="ti-chg pos">+0.38%</span></span>
+    <span class="ticker-item"><span class="ti-label">GOLD (10g)</span><span class="ti-val">₹78,450</span><span class="ti-chg pos">+0.6%</span></span>
+    <span class="ticker-item"><span class="ti-label">SILVER (kg)</span><span class="ti-val">₹94,200</span><span class="ti-chg neg">-0.3%</span></span>
+    <span class="ticker-item"><span class="ti-label">CPI INFLATION (QTR)</span><span class="ti-val">5.1%</span><span class="ti-chg neg">-0.2%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY IT</span><span class="ti-val">+1.12%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY BANK</span><span class="ti-val">-0.44%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY AUTO</span><span class="ti-val">+0.81%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY 50</span><span class="ti-val">24,235.10</span><span class="ti-chg pos">+0.42%</span></span>
+    <span class="ticker-item"><span class="ti-label">SENSEX</span><span class="ti-val">79,940.25</span><span class="ti-chg pos">+0.38%</span></span>
+    <span class="ticker-item"><span class="ti-label">GOLD (10g)</span><span class="ti-val">₹78,450</span><span class="ti-chg pos">+0.6%</span></span>
+    <span class="ticker-item"><span class="ti-label">SILVER (kg)</span><span class="ti-val">₹94,200</span><span class="ti-chg neg">-0.3%</span></span>
+    <span class="ticker-item"><span class="ti-label">CPI INFLATION (QTR)</span><span class="ti-val">5.1%</span><span class="ti-chg neg">-0.2%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY IT</span><span class="ti-val">+1.12%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY BANK</span><span class="ti-val">-0.44%</span></span>
+    <span class="ticker-item"><span class="ti-label">NIFTY AUTO</span><span class="ti-val">+0.81%</span></span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">Paisa <span>Pathshala</span></div>
+    <nav class="nav-links">
+      <a href="#portfolio-health">Portfolio check</a>
+      <a href="#quiz">Find your style</a>
+      <a href="#screener">Screener</a>
+      <a href="#ratios">Ratios</a>
+      <a href="#news">News</a>
+      <a href="#calculators">Calculators</a>
+      <a href="#watch">Watch</a>
+      <a href="#learn">Learn</a>
+      <a href="#about">About</a>
+    </nav>
+    <button class="nav-cta">Start learning</button>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div>
+    <h1>Understand your money before someone else manages it for you.</h1>
+    <p class="lede">Plain-language lessons, real calculators, and no jargon — built for people who want to make their own financial decisions, not outsource them.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary">Open your first lesson</button>
+      <button class="btn-ghost">Try the SIP calculator</button>
+    </div>
+  </div>
+
+  <div class="ledger">
+    <div class="ledger-head">
+      <span>Your learning ledger</span>
+      <small>SAMPLE ENTRY</small>
+    </div>
+    <div class="ledger-rows">
+      <div class="ledger-row">
+        <span class="ledger-num">01</span>
+        <span class="ledger-desc">What is a mutual fund<small>Lesson completed</small></span>
+        <span class="ledger-amt">✓</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-num">02</span>
+        <span class="ledger-desc">SIP of ₹5,000 / month<small>Started 8 months ago</small></span>
+        <span class="ledger-amt up">+₹41,200</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-num">03</span>
+        <span class="ledger-desc">Emergency fund goal<small>6 months of expenses</small></span>
+        <span class="ledger-amt">64%</span>
+      </div>
+    </div>
+    <div class="ledger-foot">
+      <span class="total-label">Net worth tracked</span>
+      <span class="total-amt">₹3,84,600</span>
+    </div>
+  </div>
+</section>
+
+<section class="pillars wrap" id="learn">
+  <h2>Three ways in, depending on where you're starting from</h2>
+  <div class="pillar-list">
+    <div class="pillar">
+      <span class="pillar-mark">First entry</span>
+      <h3>Start from zero</h3>
+      <p>Short lessons on saving, budgeting, and reading a bank statement — for anyone who's never actively managed money before.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-mark">Second entry</span>
+      <h3>Grow what you have</h3>
+      <p>Mutual funds, SIPs, tax-saving instruments, and how to read a fund factsheet without falling for the highlighted number.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-mark">Third entry</span>
+      <h3>Plan ahead</h3>
+      <p>Retirement math, insurance you actually need, and goal-based investing for a house, a wedding, or your kid's education.</p>
+    </div>
+  </div>
+</section>
+
+<section class="calc-strip" id="calculators">
+  <div class="wrap calc-inner">
+    <div>
+      <h2>See the number before you commit to it</h2>
+      <p>Every lesson links to a calculator, so the idea and the arithmetic sit side by side. Adjust the amount, the years, the rate — watch the number move.</p>
+      <button class="btn-primary">Open all calculators</button>
+    </div>
+    <div class="calc-mock">
+      <div class="calc-field">
+        <label>Monthly SIP amount</label>
+        <div class="calc-bar"></div>
+      </div>
+      <div class="calc-field">
+        <label>Investment period — 15 years</label>
+        <div class="calc-bar"></div>
+      </div>
+      <div class="calc-result">
+        <span>Estimated value at 12% p.a.</span>
+        <span>₹25.2L</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust wrap" id="about">
+  <div class="trust-grid">
+    <div>
+      <h2>Written by someone learning in public, not a faceless institution</h2>
+      <p>This started as a way to explain money simply to friends and family — the same explanations that now go out to thousands of readers every week. No product sales, no "sign up with our partner broker" links dressed up as advice.</p>
+    </div>
+    <div class="quote">
+      <p class="q">I finally understood what an expense ratio actually costs me over 10 years. Nobody had put it that plainly before.</p>
+      <div class="who">A reader, on the mutual funds series</div>
+    </div>
+  </div>
+</section>
+
+<section class="watch" id="watch">
+  <div class="wrap">
+    <div class="watch-head">
+      <h2>Prefer to watch? Same lessons, on video.</h2>
+      <div class="watch-tabs">
+        <button class="active">Investing basics</button>
+        <button>Trading</button>
+        <button>Tax &amp; planning</button>
+      </div>
+    </div>
+    <div class="video-grid">
+      <div class="video-card">
+        <div class="video-thumb"><span class="play"></span><span class="dur">6:12</span></div>
+        <div class="video-body">
+          <span class="video-track">Investing basics</span>
+          <h3>What actually happens when you buy a mutual fund</h3>
+          <p>NAV, folios, and where your money physically goes</p>
+        </div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb"><span class="play"></span><span class="dur">9:47</span></div>
+        <div class="video-body">
+          <span class="video-track">Investing basics</span>
+          <h3>SIP vs lump sum, explained with real numbers</h3>
+          <p>A side-by-side over 10 years of Nifty data</p>
+        </div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb"><span class="play"></span><span class="dur">7:30</span></div>
+        <div class="video-body">
+          <span class="video-track">Investing basics</span>
+          <h3>Reading a fund factsheet in under 5 minutes</h3>
+          <p>The four numbers that actually matter</p>
+        </div>
+      </div>
+    </div>
+    <div class="watch-more"><button class="btn-ghost">See all videos on YouTube</button></div>
+  </div>
+</section>
+
+<section class="screener" id="screener">
+  <div class="wrap">
+    <div class="screener-head">
+      <h2>Screen the stock, then trade it</h2>
+      <div class="screener-tabs">
+        <button class="active">Nifty 50</button>
+        <button>Most watched</button>
+        <button>Your list</button>
+      </div>
+    </div>
+    <p class="screener-sub">Current price and day's change, sourced live once connected to a market-data feed. Each stock is also tagged by risk category — pick a stock, then continue straight to your own broker to place the order — we never touch your trade.</p>
+
+    <div class="screener-filters" id="riskFilters">
+      <button type="button" class="risk-filter-btn active" data-filter="all">All</button>
+      <button type="button" class="risk-filter-btn" data-filter="low">Low risk</button>
+      <button type="button" class="risk-filter-btn" data-filter="moderate">Moderate risk</button>
+      <button type="button" class="risk-filter-btn" data-filter="high">High risk</button>
+    </div>
+
+    <div class="screener-table">
+      <div class="sr-head-row">
+        <span>Company</span><span>CMP (₹)</span><span>Chg %</span><span>Mkt Cap (Cr)</span><span>P/E</span><span>Risk</span>
+      </div>
+
+      <div class="sr-row-wrap" data-risk="moderate">
+        <div class="sr-row">
+          <span class="sr-company">Reliance Industries<span class="ticker">RELIANCE</span></span>
+          <span class="sr-num">2,946.10</span>
+          <span class="sr-change pos">+1.42%</span>
+          <span class="sr-num">19,94,200</span>
+          <span class="sr-num">24.6</span>
+          <span class="risk-badge moderate">Moderate</span>
+        </div>
+        <div class="sr-actions">
+          <span class="sr-actions-label">Trade via</span>
+          <a class="broker-pill" href="https://kite.zerodha.com" target="_blank" rel="noopener noreferrer">Zerodha</a>
+          <a class="broker-pill" href="https://www.angelone.in" target="_blank" rel="noopener noreferrer">Angel One</a>
+          <a class="broker-pill" href="https://upstox.com" target="_blank" rel="noopener noreferrer">Upstox</a>
+          <a class="broker-pill" href="https://groww.in" target="_blank" rel="noopener noreferrer">Groww</a>
+        </div>
+      </div>
+
+      <div class="sr-row-wrap" data-risk="low">
+        <div class="sr-row">
+          <span class="sr-company">Tata Consultancy Services<span class="ticker">TCS</span></span>
+          <span class="sr-num">4,102.35</span>
+          <span class="sr-change neg">-0.68%</span>
+          <span class="sr-num">14,84,900</span>
+          <span class="sr-num">28.1</span>
+          <span class="risk-badge low">Low</span>
+        </div>
+        <div class="sr-actions">
+          <span class="sr-actions-label">Trade via</span>
+          <a class="broker-pill" href="https://kite.zerodha.com" target="_blank" rel="noopener noreferrer">Zerodha</a>
+          <a class="broker-pill" href="https://www.angelone.in" target="_blank" rel="noopener noreferrer">Angel One</a>
+          <a class="broker-pill" href="https://upstox.com" target="_blank" rel="noopener noreferrer">Upstox</a>
+          <a class="broker-pill" href="https://groww.in" target="_blank" rel="noopener noreferrer">Groww</a>
+        </div>
+      </div>
+
+      <div class="sr-row-wrap" data-risk="low">
+        <div class="sr-row">
+          <span class="sr-company">HDFC Bank<span class="ticker">HDFCBANK</span></span>
+          <span class="sr-num">1,687.90</span>
+          <span class="sr-change pos">+0.95%</span>
+          <span class="sr-num">12,83,400</span>
+          <span class="sr-num">19.4</span>
+          <span class="risk-badge low">Low</span>
+        </div>
+        <div class="sr-actions">
+          <span class="sr-actions-label">Trade via</span>
+          <a class="broker-pill" href="https://kite.zerodha.com" target="_blank" rel="noopener noreferrer">Zerodha</a>
+          <a class="broker-pill" href="https://www.angelone.in" target="_blank" rel="noopener noreferrer">Angel One</a>
+          <a class="broker-pill" href="https://upstox.com" target="_blank" rel="noopener noreferrer">Upstox</a>
+          <a class="broker-pill" href="https://groww.in" target="_blank" rel="noopener noreferrer">Groww</a>
+        </div>
+      </div>
+
+      <div class="sr-row-wrap" data-risk="moderate">
+        <div class="sr-row">
+          <span class="sr-company">Infosys<span class="ticker">INFY</span></span>
+          <span class="sr-num">1,542.20</span>
+          <span class="sr-change neg">-1.10%</span>
+          <span class="sr-num">6,40,700</span>
+          <span class="sr-num">23.8</span>
+          <span class="risk-badge moderate">Moderate</span>
+        </div>
+        <div class="sr-actions">
+          <span class="sr-actions-label">Trade via</span>
+          <a class="broker-pill" href="https://kite.zerodha.com" target="_blank" rel="noopener noreferrer">Zerodha</a>
+          <a class="broker-pill" href="https://www.angelone.in" target="_blank" rel="noopener noreferrer">Angel One</a>
+          <a class="broker-pill" href="https://upstox.com" target="_blank" rel="noopener noreferrer">Upstox</a>
+          <a class="broker-pill" href="https://groww.in" target="_blank" rel="noopener noreferrer">Groww</a>
+        </div>
+      </div>
+
+      <div class="sr-row-wrap" data-risk="high">
+        <div class="sr-row">
+          <span class="sr-company">Zomato<span class="ticker">ZOMATO</span></span>
+          <span class="sr-num">268.45</span>
+          <span class="sr-change pos">+3.20%</span>
+          <span class="sr-num">2,58,300</span>
+          <span class="sr-num">142.0</span>
+          <span class="risk-badge high">High</span>
+        </div>
+        <div class="sr-actions">
+          <span class="sr-actions-label">Trade via</span>
+          <a class="broker-pill" href="https://kite.zerodha.com" target="_blank" rel="noopener noreferrer">Zerodha</a>
+          <a class="broker-pill" href="https://www.angelone.in" target="_blank" rel="noopener noreferrer">Angel One</a>
+          <a class="broker-pill" href="https://upstox.com" target="_blank" rel="noopener noreferrer">Upstox</a>
+          <a class="broker-pill" href="https://groww.in" target="_blank" rel="noopener noreferrer">Groww</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="screener-disclaimer">Prices shown are illustrative placeholders for this design mockup, not live market data. Risk tags (Low/Moderate/High) are general category labels applied the same way to every visitor — not personalized advice. Broker links go to each platform's own site — this site does not execute, hold, or advise on trades. Trading in securities carries risk of loss.</div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="riskModal">
+  <div class="modal-card">
+    <button type="button" class="modal-close" id="riskModalClose" aria-label="Close">×</button>
+    <h3>Browse by your risk category</h3>
+    <p id="riskModalText">Based on your quiz result, you might want to start with stocks and funds tagged accordingly. This filters the screener above — it doesn't pick anything for you.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" id="riskModalGo">Browse matching stocks</button>
+      <button type="button" class="btn-ghost" id="riskModalAll">See everything instead</button>
+    </div>
+    <div class="modal-note">Risk tags are general category labels applied the same way to every visitor, based on typical volatility for that type of stock — not a personal recommendation for you.</div>
+  </div>
+</div>
+
+<section class="news" id="news">
+  <div class="wrap">
+    <div class="news-head">
+      <h2>Today's market news</h2>
+      <span class="news-live"><span class="dot"></span>Auto-refreshing</span>
+    </div>
+    <p class="news-sub">Pulled automatically from financial news sources every 15 minutes — so it's here to give you context, not to move you into a snap decision.</p>
+    <div class="news-list">
+      <a class="news-item" href="#">
+        <span class="news-time">11:42 AM</span>
+        <span class="news-headline">RBI keeps repo rate unchanged for third straight policy meeting</span>
+        <span class="news-source">Economic Times</span>
+      </a>
+      <a class="news-item" href="#">
+        <span class="news-time">11:10 AM</span>
+        <span class="news-headline">IT stocks rally as major firms beat Q2 earnings estimates</span>
+        <span class="news-source">Business Standard</span>
+      </a>
+      <a class="news-item" href="#">
+        <span class="news-time">10:35 AM</span>
+        <span class="news-headline">FPI inflows into Indian equities cross ₹12,000 crore this month</span>
+        <span class="news-source">Mint</span>
+      </a>
+      <a class="news-item" href="#">
+        <span class="news-time">9:58 AM</span>
+        <span class="news-headline">Gold prices dip as rupee strengthens against the dollar</span>
+        <span class="news-source">Moneycontrol</span>
+      </a>
+    </div>
+    <div class="news-disclaimer">Headlines shown are for illustration in this design mockup. In the live site, this feed would be populated automatically from licensed RSS sources — not written or verified by us.</div>
+  </div>
+</section>
+
+<section class="ratios" id="ratios">
+  <div class="wrap">
+    <div class="ratios-head">
+      <h2>Every ratio you need, in one place</h2>
+      <div class="ratios-tabs">
+        <button class="active">Valuation</button>
+        <button>Profitability</button>
+        <button>Your returns</button>
+        <button>Risk</button>
+      </div>
+    </div>
+    <p class="ratios-sub">Each calculator explains what the number means before it asks you to compute it — so you're not just plugging in figures blind.</p>
+    <div class="ratio-grid">
+      <div class="ratio-card">
+        <h3>P/E Ratio</h3>
+        <p>Are you paying a fair price for what the company earns?</p>
+        <div class="ratio-formula">Price ÷ Earnings per Share</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+      <div class="ratio-card">
+        <h3>Current Ratio</h3>
+        <p>Can the company cover its bills due within a year?</p>
+        <div class="ratio-formula">Current Assets ÷ Current Liabilities</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+      <div class="ratio-card">
+        <h3>ROE</h3>
+        <p>How efficiently is your invested capital being used?</p>
+        <div class="ratio-formula">Net Income ÷ Shareholder Equity</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+      <div class="ratio-card">
+        <h3>XIRR</h3>
+        <p>What did your actual investments return, given irregular deposits?</p>
+        <div class="ratio-formula">Annualized rate across dated cash flows</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+      <div class="ratio-card">
+        <h3>YTM</h3>
+        <p>What will a bond actually yield if held to maturity?</p>
+        <div class="ratio-formula">Total return incl. coupons + price change</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+      <div class="ratio-card">
+        <h3>Risk-Reward Ratio</h3>
+        <p>Is this trade worth the downside you're risking?</p>
+        <div class="ratio-formula">Potential Profit ÷ Potential Loss</div>
+        <a class="ratio-open" href="#">Open calculator →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quiz-section" id="quiz">
+  <div class="wrap">
+    <div class="quiz-head">
+      <h2>Find your investing style</h2>
+      <p>Four quick questions about you — not about any stock or fund. This tells you what kind of investor you are, in plain terms, so you can use the screener and calculators above with a clearer sense of what to look for.</p>
+    </div>
+    <div class="quiz-box">
+      <div class="quiz-progress" id="quizProgress"></div>
+
+      <form id="quizForm">
+        <div class="quiz-q active" data-q="0">
+          <span class="qnum">Question 1 of 4</span>
+          <h3>How long can this money stay invested before you'd need it back?</h3>
+          <div class="quiz-opts">
+            <button type="button" class="quiz-opt" data-score="1">Less than 1 year</button>
+            <button type="button" class="quiz-opt" data-score="2">1–3 years</button>
+            <button type="button" class="quiz-opt" data-score="3">3–7 years</button>
+            <button type="button" class="quiz-opt" data-score="4">7+ years</button>
+          </div>
+        </div>
+
+        <div class="quiz-q" data-q="1">
+          <span class="qnum">Question 2 of 4</span>
+          <h3>If this investment dropped 20% in a month, what would you most likely do?</h3>
+          <div class="quiz-opts">
+            <button type="button" class="quiz-opt" data-score="1">Sell immediately to stop further loss</button>
+            <button type="button" class="quiz-opt" data-score="2">Feel anxious, but wait it out</button>
+            <button type="button" class="quiz-opt" data-score="3">Stay invested, it's part of the plan</button>
+            <button type="button" class="quiz-opt" data-score="4">See it as a chance to add more</button>
+          </div>
+        </div>
+
+        <div class="quiz-q" data-q="2">
+          <span class="qnum">Question 3 of 4</span>
+          <h3>How much investing experience do you currently have?</h3>
+          <div class="quiz-opts">
+            <button type="button" class="quiz-opt" data-score="1">None — this would be my first investment</button>
+            <button type="button" class="quiz-opt" data-score="2">A little — mostly fixed deposits or gold</button>
+            <button type="button" class="quiz-opt" data-score="3">Some — a few mutual funds or SIPs</button>
+            <button type="button" class="quiz-opt" data-score="4">Experienced — I actively track markets</button>
+          </div>
+        </div>
+
+        <div class="quiz-q" data-q="3">
+          <span class="qnum">Question 4 of 4</span>
+          <h3>What matters more to you right now?</h3>
+          <div class="quiz-opts">
+            <button type="button" class="quiz-opt" data-score="1">Protecting what I already have</button>
+            <button type="button" class="quiz-opt" data-score="2">Steady, predictable growth</button>
+            <button type="button" class="quiz-opt" data-score="3">Solid long-term growth, some ups and downs are fine</button>
+            <button type="button" class="quiz-opt" data-score="4">Maximum growth, I can handle volatility</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="quiz-nav">
+        <button type="button" class="btn-ghost" id="quizBack" style="display:none;">Back</button>
+        <span></span>
+      </div>
+
+      <div class="quiz-result" id="quizResult">
+        <span class="badge" id="quizBadge">Balanced Investor</span>
+        <p id="quizDesc">Your description will appear here.</p>
+        <ul class="quiz-notes" id="quizNotes"></ul>
+        <button type="button" class="btn-primary" id="quizRestart">Retake the quiz</button>
+        <div class="quiz-caution">This is educational profiling only, not investment advice — it does not recommend any specific stock, fund, or product. Please consult a SEBI-registered investment adviser before making investment decisions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  var questions = document.querySelectorAll('.quiz-q');
+  var progress = document.getElementById('quizProgress');
+  var backBtn = document.getElementById('quizBack');
+  var resultBox = document.getElementById('quizResult');
+  var badge = document.getElementById('quizBadge');
+  var desc = document.getElementById('quizDesc');
+  var notes = document.getElementById('quizNotes');
+  var restartBtn = document.getElementById('quizRestart');
+  var current = 0;
+  var scores = [];
+
+  questions.forEach(function() {
+    var dot = document.createElement('span');
+    progress.appendChild(dot);
+  });
+
+  function updateProgress() {
+    var dots = progress.querySelectorAll('span');
+    dots.forEach(function(d, i) { d.classList.toggle('done', i <= current); });
+  }
+  updateProgress();
+
+  function showQuestion(i) {
+    questions.forEach(function(q) { q.classList.remove('active'); });
+    questions[i].classList.add('active');
+    backBtn.style.display = i > 0 ? 'inline-block' : 'none';
+    updateProgress();
+  }
+
+  questions.forEach(function(q, qi) {
+    var opts = q.querySelectorAll('.quiz-opt');
+    opts.forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        opts.forEach(function(o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        scores[qi] = parseInt(opt.getAttribute('data-score'), 10);
+
+        setTimeout(function() {
+          if (qi < questions.length - 1) {
+            current = qi + 1;
+            showQuestion(current);
+          } else {
+            showResult();
+          }
+        }, 200);
+      });
+    });
+  });
+
+  backBtn.addEventListener('click', function() {
+    if (current > 0) { current -= 1; showQuestion(current); }
+  });
+
+  function showResult() {
+    document.getElementById('quizForm').style.display = 'none';
+    document.querySelector('.quiz-nav').style.display = 'none';
+    resultBox.classList.add('active');
+
+    var total = scores.reduce(function(a, b) { return a + (b || 0); }, 0);
+    var profile;
+    if (total <= 6) profile = 'conservative';
+    else if (total <= 10) profile = 'moderate';
+    else if (total <= 14) profile = 'balanced-growth';
+    else profile = 'aggressive-growth';
+
+    var content = {
+      'conservative': {
+        badge: 'Conservative Investor',
+        desc: "You value protecting your money over chasing high returns — completely reasonable, especially with a shorter time horizon or lower comfort with ups and downs.",
+        notes: [
+          "Educationally, conservative profiles often explore: fixed deposits, debt mutual funds, and large-cap or index-based options",
+          "Focus on capital protection tends to matter more than beating inflation aggressively",
+          "A shorter horizon usually means less time to recover from a downturn, which shapes this profile"
+        ]
+      },
+      'moderate': {
+        badge: 'Moderate Investor',
+        desc: "You're open to some risk for better returns, but stability still matters to you more than maximizing growth.",
+        notes: [
+          "Educationally, moderate profiles often explore: hybrid mutual funds, large-cap equity, and a mix of debt and equity",
+          "A balanced mix tends to smooth out some of the ups and downs of pure equity",
+          "Worth revisiting this profile as your horizon lengthens or experience grows"
+        ]
+      },
+      'balanced-growth': {
+        badge: 'Balanced Growth Investor',
+        desc: "You're comfortable taking on real risk for real growth, especially given a longer runway before you'll need this money.",
+        notes: [
+          "Educationally, this profile often explores: diversified equity mutual funds, large and mid-cap stocks, index funds",
+          "A longer horizon generally gives more room to ride out short-term volatility",
+          "Diversification across sectors tends to matter more than picking any single stock"
+        ]
+      },
+      'aggressive-growth': {
+        badge: 'Aggressive Growth Investor',
+        desc: "You're focused on maximizing long-term growth and can stomach significant short-term swings to get there.",
+        notes: [
+          "Educationally, this profile often explores: mid and small-cap equity, sector-focused funds, direct stock investing",
+          "Higher potential returns generally come with higher volatility — worth revisiting this often",
+          "Even aggressive profiles benefit from not concentrating everything in one stock or sector"
+        ]
+      }
+    };
+
+    var c = content[profile];
+    badge.textContent = c.badge;
+    desc.textContent = c.desc;
+    notes.innerHTML = '';
+    c.notes.forEach(function(n) {
+      var li = document.createElement('li');
+      li.textContent = n;
+      notes.appendChild(li);
+    });
+
+    var riskMap = {
+      'conservative': 'low',
+      'moderate': 'low',
+      'balanced-growth': 'moderate',
+      'aggressive-growth': 'high'
+    };
+    var matchedRisk = riskMap[profile];
+
+    setTimeout(function() { openRiskModal(matchedRisk, c.badge); }, 500);
+  }
+
+  function openRiskModal(risk, badgeLabel) {
+    var modal = document.getElementById('riskModal');
+    var text = document.getElementById('riskModalText');
+    var goBtn = document.getElementById('riskModalGo');
+    text.textContent = badgeLabel + ' profiles often start by browsing stocks tagged "' + risk.charAt(0).toUpperCase() + risk.slice(1) + '" risk — this filters the screener below. You can browse any category regardless.';
+    goBtn.onclick = function() {
+      closeRiskModal();
+      applyRiskFilter(risk);
+      document.getElementById('screener').scrollIntoView({ behavior: 'smooth' });
+    };
+    modal.classList.add('active');
+  }
+  function closeRiskModal() {
+    document.getElementById('riskModal').classList.remove('active');
+  }
+  document.getElementById('riskModalClose').addEventListener('click', closeRiskModal);
+  document.getElementById('riskModalAll').addEventListener('click', function() {
+    closeRiskModal();
+    applyRiskFilter('all');
+    document.getElementById('screener').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('riskModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRiskModal();
+  });
+
+  function applyRiskFilter(filter) {
+    document.querySelectorAll('.risk-filter-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+    });
+    document.querySelectorAll('.sr-row-wrap').forEach(function(row) {
+      var match = filter === 'all' || row.getAttribute('data-risk') === filter;
+      row.style.display = match ? '' : 'none';
+    });
+  }
+
+  document.querySelectorAll('.risk-filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      applyRiskFilter(btn.getAttribute('data-filter'));
+    });
+  });
+
+  /* PORTFOLIO HEALTH CHECKER */
+  var STOCKS = {
+    RELIANCE: { name: 'Reliance Industries', price: 2946.10, sector: 'Energy', risk: 'moderate' },
+    TCS: { name: 'TCS', price: 4102.35, sector: 'IT', risk: 'low' },
+    HDFCBANK: { name: 'HDFC Bank', price: 1687.90, sector: 'Financials', risk: 'low' },
+    INFY: { name: 'Infosys', price: 1542.20, sector: 'IT', risk: 'moderate' },
+    ZOMATO: { name: 'Zomato', price: 268.45, sector: 'Consumer Internet', risk: 'high' }
+  };
+  var sectorColors = { 'Energy': '#7A2E2E', 'IT': '#16233D', 'Financials': '#E2A73E', 'Consumer Internet': '#5B6472' };
+  var riskColors = { low: '#2F6B3A', moderate: '#E2A73E', high: '#7A2E2E' };
+  var riskBeta = { low: 0.6, moderate: 1.0, high: 1.6 };
+
+  var phcRows = document.getElementById('phcRows');
+  var rowCount = 0;
+
+  function addPhcRow(ticker, qty) {
+    rowCount++;
+    var id = 'phcRow' + rowCount;
+    var div = document.createElement('div');
+    div.className = 'phc-row';
+    div.id = id;
+    var opts = Object.keys(STOCKS).map(function(t) {
+      return '<option value="' + t + '"' + (t === ticker ? ' selected' : '') + '>' + STOCKS[t].name + '</option>';
+    }).join('');
+    div.innerHTML = '<select>' + opts + '</select>' +
+      '<input type="number" min="1" value="' + (qty || 1) + '" placeholder="Qty">' +
+      '<button type="button" class="phc-remove" aria-label="Remove">×</button>';
+    div.querySelector('.phc-remove').addEventListener('click', function() { div.remove(); });
+    phcRows.appendChild(div);
+  }
+  addPhcRow('RELIANCE', 10);
+  addPhcRow('TCS', 5);
+  addPhcRow('HDFCBANK', 8);
+
+  document.getElementById('phcAddRow').addEventListener('click', function() { addPhcRow('RELIANCE', 1); });
+
+  document.getElementById('phcAnalyze').addEventListener('click', function() {
+    var holdings = [];
+    phcRows.querySelectorAll('.phc-row').forEach(function(row) {
+      var ticker = row.querySelector('select').value;
+      var qty = parseFloat(row.querySelector('input').value) || 0;
+      if (qty > 0) holdings.push({ ticker: ticker, qty: qty });
+    });
+    if (holdings.length === 0) return;
+
+    var total = 0;
+    var sectorVal = {};
+    var riskVal = {};
+    holdings.forEach(function(h) {
+      var s = STOCKS[h.ticker];
+      var val = s.price * h.qty;
+      total += val;
+      sectorVal[s.sector] = (sectorVal[s.sector] || 0) + val;
+      riskVal[s.risk] = (riskVal[s.risk] || 0) + val;
+    });
+
+    document.getElementById('phcTotal').textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+
+    var sectorBar = document.getElementById('phcSectorBar');
+    var sectorLegend = document.getElementById('phcSectorLegend');
+    sectorBar.innerHTML = ''; sectorLegend.innerHTML = '';
+    var sortedSectors = Object.keys(sectorVal).sort(function(a, b) { return sectorVal[b] - sectorVal[a]; });
+    sortedSectors.forEach(function(s) {
+      var pct = (sectorVal[s] / total) * 100;
+      var seg = document.createElement('div');
+      seg.className = 'phc-bar-seg';
+      seg.style.width = pct + '%';
+      seg.style.background = sectorColors[s] || '#999';
+      sectorBar.appendChild(seg);
+      var leg = document.createElement('span');
+      leg.innerHTML = '<span class="dot" style="background:' + (sectorColors[s] || '#999') + '"></span>' + s + ' — ' + pct.toFixed(0) + '%';
+      sectorLegend.appendChild(leg);
+    });
+
+    var riskBar = document.getElementById('phcRiskBar');
+    var riskLegend = document.getElementById('phcRiskLegend');
+    riskBar.innerHTML = ''; riskLegend.innerHTML = '';
+    ['low', 'moderate', 'high'].forEach(function(r) {
+      if (!riskVal[r]) return;
+      var pct = (riskVal[r] / total) * 100;
+      var seg = document.createElement('div');
+      seg.className = 'phc-bar-seg';
+      seg.style.width = pct + '%';
+      seg.style.background = riskColors[r];
+      riskBar.appendChild(seg);
+      var leg = document.createElement('span');
+      leg.innerHTML = '<span class="dot" style="background:' + riskColors[r] + '"></span>' + r.charAt(0).toUpperCase() + r.slice(1) + ' — ' + pct.toFixed(0) + '%';
+      riskLegend.appendChild(leg);
+    });
+
+    var blendedBeta = 0;
+    holdings.forEach(function(h) {
+      var s = STOCKS[h.ticker];
+      blendedBeta += (s.price * h.qty / total) * riskBeta[s.risk];
+    });
+    document.getElementById('phcStress10').textContent = '≈ ' + (blendedBeta * -10).toFixed(1) + '%';
+    document.getElementById('phcStress20').textContent = '≈ ' + (blendedBeta * -20).toFixed(1) + '%';
+
+    var notesEl = document.getElementById('phcNotes');
+    notesEl.innerHTML = '';
+    var notes = [];
+    var topSectorPct = (sectorVal[sortedSectors[0]] / total) * 100;
+    if (topSectorPct >= 40) {
+      notes.push('About ' + topSectorPct.toFixed(0) + '% of this portfolio sits in ' + sortedSectors[0] + '. Portfolios concentrated above roughly 30–40% in one sector are generally considered less diversified.');
+    } else {
+      notes.push('No single sector exceeds 40% here — this mix is relatively spread out across sectors compared to a concentrated portfolio.');
+    }
+    var highPct = riskVal.high ? (riskVal.high / total) * 100 : 0;
+    if (highPct > 30) {
+      notes.push(highPct.toFixed(0) + '% of holdings carry a "High" risk tag — this generally means more volatility, in both directions.');
+    }
+    notes.push('This hypothetical scenario assumes historical risk-tag behavior and does not account for company-specific news, earnings, or events.');
+    notes.forEach(function(n) {
+      var li = document.createElement('li');
+      li.textContent = n;
+      notesEl.appendChild(li);
+    });
+
+    document.getElementById('phcResults').classList.add('active');
+  });
+
+  restartBtn.addEventListener('click', function() {
+    scores = [];
+    current = 0;
+    document.querySelectorAll('.quiz-opt').forEach(function(o) { o.classList.remove('selected'); });
+    document.getElementById('quizForm').style.display = 'block';
+    document.querySelector('.quiz-nav').style.display = 'flex';
+    resultBox.classList.remove('active');
+    showQuestion(0);
+  });
+})();
+</script>
+
+<section class="phc" id="portfolio-health">
+  <div class="wrap">
+    <div class="phc-head">
+      <h2>Check your portfolio's health</h2>
+      <p>Enter what you hold. This shows you facts about the mix — concentration, risk balance, and how it might behave in a downturn — it does not tell you what to buy or sell.</p>
+    </div>
+
+    <div class="phc-grid">
+      <div class="phc-form">
+        <div id="phcRows"></div>
+        <button type="button" class="phc-add" id="phcAddRow">+ Add another holding</button>
+        <button type="button" class="btn-primary phc-analyze" id="phcAnalyze">Check portfolio health</button>
+      </div>
+
+      <div class="phc-results" id="phcResults">
+        <div class="phc-total" id="phcTotal">₹0</div>
+        <div class="phc-total-label">Total value of entered holdings</div>
+
+        <div class="phc-metric">
+          <div class="phc-metric-label"><span>Sector concentration</span></div>
+          <div class="phc-bar-track" id="phcSectorBar"></div>
+          <div class="phc-legend" id="phcSectorLegend"></div>
+        </div>
+
+        <div class="phc-metric">
+          <div class="phc-metric-label"><span>Risk-tag balance</span></div>
+          <div class="phc-bar-track" id="phcRiskBar"></div>
+          <div class="phc-legend" id="phcRiskLegend"></div>
+        </div>
+
+        <div class="phc-stress">
+          <h4>Hypothetical stress scenario</h4>
+          <div class="phc-stress-row"><span>If the broader market fell 10%</span><span id="phcStress10">—</span></div>
+          <div class="phc-stress-row"><span>If the broader market fell 20%</span><span id="phcStress20">—</span></div>
+        </div>
+
+        <ul class="phc-notes" id="phcNotes"></ul>
+
+        <div class="phc-disclaimer">This analysis is based only on the numbers you entered and general risk-tag assumptions — it is educational, not investment advice, and does not recommend buying, selling, or rebalancing any holding. For personalized rebalancing guidance, consult a SEBI-registered Investment Adviser.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-brand">Paisa Pathshala</div>
+    <div class="foot-note">Educational content only — not investment advice. Always do your own research before investing.</div>
+  </div>
+</footer>
+
+</body>
+</html>

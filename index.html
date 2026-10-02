@@ -24,6 +24,8 @@
   }
   *, *::before, *::after { box-sizing: inherit; }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { overflow-x: hidden; max-width: 100%; }
+  p, li, h1, h2, h3, .phc-disclaimer, .screener-disclaimer, .news-disclaimer { overflow-wrap: break-word; }
   body {
     margin: 0;
     background: var(--parchment);
@@ -40,7 +42,10 @@
   }
   img { max-width: 100%; }
 
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 56px); }
+  @media (max-width: 500px) {
+    .hero h1 { font-size: 2rem; }
+  }
 
   /* TICKER */
   .ticker-strip {
@@ -173,7 +178,7 @@
     font-size: 1.08rem; font-weight: 600; margin: 0 0 10px;
   }
   .pillar p {
-    color: var(--slate); font-size: 0.92rem; margin: 0; line-height: 1.55;
+    color: var(--slate); font-size: 0.92rem; margin: 0; line-height: 1.55; max-width: 36ch;
   }
 
   /* CALCULATOR STRIP */
@@ -194,10 +199,10 @@
   }
   .calc-field { margin-bottom: 18px; }
   .calc-field label { display: block; font-size: 0.8rem; color: var(--slate); margin-bottom: 6px; }
-  .calc-bar { height: 6px; background: var(--parchment-line); border-radius: 3px; position: relative; }
-  .calc-bar::after {
-    content: ""; position: absolute; left: 0; top: -4px;
-    width: 62%; height: 14px; background: var(--marigold); border-radius: 7px;
+  .calc-field input {
+    width: 100%; font-family: var(--sans); font-size: 0.98rem; padding: 10px 12px;
+    border: 1px solid var(--parchment-line); border-radius: 4px; background: var(--parchment);
+    color: var(--ink);
   }
   .calc-result {
     margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--parchment-line);
@@ -239,6 +244,7 @@
   .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
   .video-card {
     background: var(--parchment); border: 1px solid var(--parchment-line); border-radius: 6px; overflow: hidden;
+    display: block; text-decoration: none; color: inherit;
   }
   .video-thumb {
     aspect-ratio: 16/9; background: var(--ink); position: relative;
@@ -264,7 +270,7 @@
   .watch-more { text-align: center; margin-top: 32px; }
 
   @media (max-width: 800px) {
-    .video-grid { grid-template-columns: 1fr; }
+    .video-grid { grid-template-columns: minmax(0,1fr); }
     .watch-tabs { display: none; }
   }
 
@@ -321,10 +327,11 @@
 
   @media (max-width: 800px) {
     .sr-head-row { display: none; }
-    .sr-row { grid-template-columns: 1fr auto; grid-template-areas: "name price" "name change"; }
-    .sr-company { grid-area: name; }
-    .sr-num { grid-area: price; }
-    .sr-change { grid-area: change; }
+    .sr-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+    }
+    .sr-company { flex: 1 1 100%; }
+    .sr-row .sr-mktcap, .sr-row .sr-pe { display: none; }
     .screener-tabs { display: none; }
   }
 
@@ -386,10 +393,32 @@
     font-family: var(--sans); font-size: 0.78rem; color: var(--ink); background: var(--parchment);
     padding: 8px 10px; border-radius: 4px; margin-bottom: 14px;
   }
-  .ratio-open { font-size: 0.82rem; color: var(--maroon); font-weight: 600; text-decoration: none; }
+  .ratio-open {
+    font-size: 0.82rem; color: var(--maroon); font-weight: 600; text-decoration: none;
+    background: none; border: none; cursor: pointer; font-family: var(--sans); padding: 0;
+  }
+
+  /* CALCULATOR MODAL */
+  .calc-modal-card { max-width: 420px; }
+  .calc-modal-card h3 { font-family: var(--serif); font-weight: 500; font-size: 1.25rem; margin: 0 0 6px; }
+  .calc-modal-sub { font-size: 0.85rem; color: var(--slate); margin: 0 0 20px; }
+  .calc-modal-field { margin-bottom: 14px; }
+  .calc-modal-field label { display: block; font-size: 0.8rem; color: var(--slate); margin-bottom: 5px; }
+  .calc-modal-field input {
+    width: 100%; font-family: var(--sans); font-size: 0.95rem; padding: 9px 11px;
+    border: 1px solid var(--parchment-line); border-radius: 4px; background: var(--parchment);
+    color: var(--ink);
+  }
+  .calc-modal-result {
+    margin-top: 18px; padding: 14px 16px; background: var(--parchment); border-radius: 5px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .calc-modal-result span:first-child { font-size: 0.82rem; color: var(--slate); }
+  .calc-modal-result span:last-child { font-family: var(--serif); font-size: 1.5rem; color: var(--maroon); }
+  .calc-modal-note { font-size: 0.74rem; color: var(--slate); margin-top: 12px; }
 
   @media (max-width: 800px) {
-    .ratio-grid { grid-template-columns: 1fr; }
+    .ratio-grid { grid-template-columns: minmax(0,1fr); }
     .ratios-tabs { display: none; }
   }
 
@@ -487,10 +516,11 @@
     margin: 0 0 14px; max-width: 20ch; line-height: 1.15;
   }
   .phc-head p { color: var(--slate); font-size: 0.96rem; margin: 0; }
-  .phc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .phc-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 40px; align-items: start; }
+  .phc-form, .phc-results { min-width: 0; }
   .phc-form { background: var(--paper); border: 1px solid var(--parchment-line); border-radius: 6px; padding: 24px; }
-  .phc-row { display: grid; grid-template-columns: 1fr 90px 32px; gap: 8px; margin-bottom: 10px; align-items: center; }
-  .phc-row select, .phc-row input {
+  .phc-row { display: grid; grid-template-columns: minmax(0,1fr) 80px 32px; gap: 8px; margin-bottom: 10px; align-items: center; }
+  .phc-row select, .phc-row input { min-width: 0; width: 100%;
     font-family: var(--sans); font-size: 0.88rem; padding: 9px 10px; border: 1px solid var(--parchment-line);
     border-radius: 4px; background: var(--parchment); color: var(--ink);
   }
@@ -512,18 +542,67 @@
 
   .phc-stress { border-top: 1px solid var(--parchment-line); padding-top: 20px; margin-top: 4px; }
   .phc-stress h4 { font-size: 0.92rem; font-weight: 600; margin: 0 0 12px; }
-  .phc-stress-row { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 8px 0; border-bottom: 1px dashed var(--parchment-line); }
+  .phc-stress-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; padding: 8px 0; border-bottom: 1px dashed var(--parchment-line); }
   .phc-stress-row span:last-child { font-weight: 600; color: var(--maroon); }
 
   .phc-notes { margin-top: 22px; }
-  .phc-notes li { font-size: 0.88rem; color: var(--slate); margin-bottom: 8px; line-height: 1.5; }
+  .phc-notes { padding-left: 18px; }
+  .phc-notes li { overflow-wrap: anywhere; font-size: 0.88rem; color: var(--slate); margin-bottom: 8px; line-height: 1.5; }
 
   .phc-disclaimer {
     font-size: 0.8rem; color: var(--slate); border-left: 2px solid var(--marigold);
     padding-left: 12px; margin-top: 22px;
   }
 
-  @media (max-width: 800px) { .phc-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) { .phc-grid { grid-template-columns: minmax(0,1fr); gap: 28px; } }
+
+  /* IPO */
+  .ipo { padding: 76px 0; background: var(--paper); border-top: 1px solid var(--parchment-line); border-bottom: 1px solid var(--parchment-line); }
+  .ipo-head { max-width: 60ch; margin-bottom: 8px; }
+  .ipo-head h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem); margin: 0 0 14px; max-width: 18ch; line-height: 1.15; }
+  .ipo-head p { color: var(--slate); font-size: 0.92rem; margin: 0 0 28px; }
+  .ipo-tabs { display: flex; gap: 20px; margin-bottom: 24px; }
+  .ipo-tabs button { background: none; border: none; font-family: var(--sans); font-size: 0.88rem; color: var(--slate); padding: 0 0 6px; cursor: pointer; border-bottom: 2px solid transparent; }
+  .ipo-tabs button.active { color: var(--ink); border-bottom-color: var(--maroon); font-weight: 600; }
+  .ipo-list { display: none; }
+  .ipo-list.active { display: block; }
+  .ipo-card { display: grid; grid-template-columns: 1fr auto; gap: 10px 20px; padding: 18px 4px; border-top: 1px solid var(--parchment-line); align-items: center; }
+  .ipo-card:last-child { border-bottom: 1px solid var(--parchment-line); }
+  .ipo-name { font-family: var(--serif); font-size: 1.02rem; }
+  .ipo-name small { display: block; font-family: var(--sans); font-size: 0.78rem; color: var(--slate); margin-top: 3px; font-weight: normal; }
+  .ipo-band { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ipo-meta { grid-column: 1 / -1; display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; color: var(--slate); }
+  .ipo-status-badge { font-size: 0.7rem; font-weight: 600; padding: 2px 9px; border-radius: 10px; display: inline-block; }
+  .ipo-status-badge.open { background: rgba(47,107,58,0.14); color: #2F6B3A; }
+  .ipo-status-badge.upcoming { background: rgba(226,167,62,0.22); color: #8A6A1E; }
+  .ipo-status-badge.closed { background: rgba(91,100,114,0.14); color: var(--slate); }
+  .ipo-disclaimer { font-size: 0.78rem; color: var(--slate); border-left: 2px solid var(--marigold); padding-left: 12px; margin-top: 24px; max-width: 56ch; }
+
+  /* PRE-MARKET */
+  .premarket { padding: 76px 0; }
+  .premarket-head { max-width: 62ch; margin-bottom: 6px; }
+  .premarket-head h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 2.8vw, 2.1rem); margin: 0 0 14px; max-width: 20ch; line-height: 1.15; }
+  .premarket-head p { color: var(--slate); font-size: 0.92rem; margin: 0 0 10px; }
+  .premarket-window { display: inline-flex; align-items: center; gap: 7px; font-size: 0.78rem; color: var(--slate); margin-bottom: 28px; }
+  .premarket-window .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--marigold); }
+  .premarket-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--parchment-line); border: 1px solid var(--parchment-line); border-radius: 6px; overflow: hidden; }
+  .premarket-col { background: var(--paper); }
+  .premarket-col h3 { font-size: 0.88rem; font-weight: 600; margin: 0; padding: 14px 18px; border-bottom: 1px solid var(--parchment-line); }
+  .premarket-col.gainers h3 { color: #2F6B3A; }
+  .premarket-col.losers h3 { color: var(--maroon); }
+  .pm-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--parchment-line); font-size: 0.88rem; }
+  .pm-row:first-of-type { border-top: none; }
+  .pm-name small { display: block; color: var(--slate); font-size: 0.74rem; }
+  .pm-chg { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .pm-chg.pos { color: #2F6B3A; }
+  .pm-chg.neg { color: var(--maroon); }
+  .premarket-note { font-size: 0.78rem; color: var(--slate); border-left: 2px solid var(--marigold); padding-left: 12px; margin-top: 22px; max-width: 58ch; }
+
+  @media (max-width: 800px) {
+    .premarket-cols { grid-template-columns: minmax(0,1fr); }
+    .ipo-band { text-align: left; }
+    .ipo-card { grid-template-columns: minmax(0,1fr); }
+  }
 
   footer {
     background: var(--paper); border-top: 1px solid var(--parchment-line);
@@ -534,10 +613,38 @@
   .foot-note { color: var(--slate); font-size: 0.82rem; max-width: 42ch; }
 
   @media (max-width: 800px) {
-    .hero { grid-template-columns: 1fr; padding: 44px 0 56px; gap: 36px; }
-    .pillar-list { grid-template-columns: 1fr; }
-    .pillar { border-right: none; border-bottom: 1px solid var(--parchment-line); padding: 22px 0; }
-    .calc-inner, .trust-grid { grid-template-columns: 1fr; gap: 28px; }
+    .hero { grid-template-columns: minmax(0,1fr); padding: 44px 0 56px; gap: 36px; text-align: center; }
+    .hero h1, .hero p.lede { margin-left: auto; margin-right: auto; }
+    .hero-ctas { justify-content: center; }
+    .pillar-list { grid-template-columns: minmax(0,1fr); }
+    .pillar {
+      border-right: none; border-bottom: 1px solid var(--parchment-line); padding: 22px 0;
+      text-align: center;
+    }
+    .pillar p { margin-left: auto; margin-right: auto; }
+    .pillars h2 { text-align: center; margin-left: auto; margin-right: auto; }
+    .calc-inner, .trust-grid { grid-template-columns: minmax(0,1fr); gap: 28px; text-align: center; }
+    .calc-inner h2, .calc-inner p, .trust h2, .trust p { margin-left: auto; margin-right: auto; }
+    .calc-inner .btn-primary { margin: 0 auto; }
+    .quote { text-align: left; }
+    .watch-head, .screener-head, .news-head, .ratios-head, .phc-head, .quiz-head {
+      text-align: center; align-items: center; flex-direction: column;
+    }
+    .watch-head h2, .screener-head h2, .news-head h2, .ratios-head h2, .quiz-head h2,
+    .screener-sub, .ratios-sub, .news-sub, .quiz-head p, .phc-head p {
+      margin-left: auto; margin-right: auto;
+    }
+    .phc-head { text-align: center; }
+    .phc-head h2 { margin-left: auto; margin-right: auto; }
+
+    /* Narrower reading column on small screens — 42ch was barely narrower than
+       the screen itself on a phone, so it never actually looked indented */
+    .hero p.lede, .trust p, .screener-sub, .ratios-sub, .news-sub,
+    .quiz-head p, .phc-head p, .calc-inner p {
+      max-width: 30ch; margin-left: auto; margin-right: auto;
+    }
+    .quote { max-width: 32ch; margin-left: auto; margin-right: auto; }
+    .pillar p { max-width: 30ch; }
     .nav-links { display: none; }
   }
 </style>
@@ -571,6 +678,8 @@
     <nav class="nav-links">
       <a href="#portfolio-health">Portfolio check</a>
       <a href="#quiz">Find your style</a>
+      <a href="#ipos">IPOs</a>
+      <a href="#premarket">Pre-market</a>
       <a href="#screener">Screener</a>
       <a href="#ratios">Ratios</a>
       <a href="#news">News</a>
@@ -652,16 +761,20 @@
     </div>
     <div class="calc-mock">
       <div class="calc-field">
-        <label>Monthly SIP amount</label>
-        <div class="calc-bar"></div>
+        <label>Monthly SIP amount (₹)</label>
+        <input type="number" id="sipAmount" value="5000" min="100">
       </div>
       <div class="calc-field">
-        <label>Investment period — 15 years</label>
-        <div class="calc-bar"></div>
+        <label>Investment period (years)</label>
+        <input type="number" id="sipYears" value="15" min="1" max="40">
+      </div>
+      <div class="calc-field">
+        <label>Expected annual return (%)</label>
+        <input type="number" id="sipRate" value="12" min="1" max="30" step="0.5">
       </div>
       <div class="calc-result">
-        <span>Estimated value at 12% p.a.</span>
-        <span>₹25.2L</span>
+        <span>Estimated value</span>
+        <span id="sipResult">₹0</span>
       </div>
     </div>
   </div>
@@ -684,39 +797,87 @@
   <div class="wrap">
     <div class="watch-head">
       <h2>Prefer to watch? Same lessons, on video.</h2>
-      <div class="watch-tabs">
-        <button class="active">Investing basics</button>
-        <button>Trading</button>
-        <button>Tax &amp; planning</button>
+      <div class="watch-tabs" id="watchTabs">
+        <button type="button" class="active" data-track="basics">Investing basics</button>
+        <button type="button" data-track="trading">Trading</button>
+        <button type="button" data-track="tax">Tax &amp; planning</button>
       </div>
     </div>
-    <div class="video-grid">
-      <div class="video-card">
+    <div class="video-grid" id="videoGrid">
+      <a class="video-card" data-track="basics" href="https://www.youtube.com/results?search_query=what+happens+when+you+buy+a+mutual+fund" target="_blank" rel="noopener noreferrer">
         <div class="video-thumb"><span class="play"></span><span class="dur">6:12</span></div>
         <div class="video-body">
           <span class="video-track">Investing basics</span>
           <h3>What actually happens when you buy a mutual fund</h3>
           <p>NAV, folios, and where your money physically goes</p>
         </div>
-      </div>
-      <div class="video-card">
+      </a>
+      <a class="video-card" data-track="basics" href="https://www.youtube.com/results?search_query=SIP+vs+lump+sum+investment+explained" target="_blank" rel="noopener noreferrer">
         <div class="video-thumb"><span class="play"></span><span class="dur">9:47</span></div>
         <div class="video-body">
           <span class="video-track">Investing basics</span>
           <h3>SIP vs lump sum, explained with real numbers</h3>
           <p>A side-by-side over 10 years of Nifty data</p>
         </div>
-      </div>
-      <div class="video-card">
+      </a>
+      <a class="video-card" data-track="basics" href="https://www.youtube.com/results?search_query=how+to+read+a+mutual+fund+factsheet" target="_blank" rel="noopener noreferrer">
         <div class="video-thumb"><span class="play"></span><span class="dur">7:30</span></div>
         <div class="video-body">
           <span class="video-track">Investing basics</span>
           <h3>Reading a fund factsheet in under 5 minutes</h3>
           <p>The four numbers that actually matter</p>
         </div>
-      </div>
+      </a>
+      <a class="video-card" data-track="trading" href="https://www.youtube.com/results?search_query=risk+reward+ratio+trading+explained" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">8:05</span></div>
+        <div class="video-body">
+          <span class="video-track">Trading</span>
+          <h3>Risk-reward ratio: the one rule most beginners skip</h3>
+          <p>Why traders lose money even when they're "right" often</p>
+        </div>
+      </a>
+      <a class="video-card" data-track="trading" href="https://www.youtube.com/results?search_query=stop+loss+basics+for+beginners+india" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">6:40</span></div>
+        <div class="video-body">
+          <span class="video-track">Trading</span>
+          <h3>Stop-loss basics: protecting a trade before it goes wrong</h3>
+          <p>Where to place it and why "gut feeling" doesn't work</p>
+        </div>
+      </a>
+      <a class="video-card" data-track="trading" href="https://www.youtube.com/results?search_query=pre+market+auction+session+NSE+explained" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">5:55</span></div>
+        <div class="video-body">
+          <span class="video-track">Trading</span>
+          <h3>What actually happens in the pre-market session</h3>
+          <p>The 9:00–9:15 AM window, explained simply</p>
+        </div>
+      </a>
+      <a class="video-card" data-track="tax" href="https://www.youtube.com/results?search_query=section+80C+tax+saving+investments+india" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">7:15</span></div>
+        <div class="video-body">
+          <span class="video-track">Tax & planning</span>
+          <h3>Section 80C, explained without the jargon</h3>
+          <p>What actually qualifies, and what doesn't</p>
+        </div>
+      </a>
+      <a class="video-card" data-track="tax" href="https://www.youtube.com/results?search_query=long+term+capital+gains+tax+on+stocks+india" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">8:50</span></div>
+        <div class="video-body">
+          <span class="video-track">Tax & planning</span>
+          <h3>How capital gains tax actually works on your stocks</h3>
+          <p>Short-term vs long-term, with real numbers</p>
+        </div>
+      </a>
+      <a class="video-card" data-track="tax" href="https://www.youtube.com/results?search_query=retirement+planning+basics+india+NPS" target="_blank" rel="noopener noreferrer" style="display:none">
+        <div class="video-thumb"><span class="play"></span><span class="dur">9:20</span></div>
+        <div class="video-body">
+          <span class="video-track">Tax & planning</span>
+          <h3>Retirement planning basics: where to even start</h3>
+          <p>NPS, EPF, and building your own runway</p>
+        </div>
+      </a>
     </div>
-    <div class="watch-more"><button class="btn-ghost">See all videos on YouTube</button></div>
+    <div class="watch-more"><a class="btn-ghost" href="https://www.youtube.com/results?search_query=personal+finance+investing+basics+india" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block;">See all videos on YouTube</a></div>
   </div>
 </section>
 
@@ -749,8 +910,8 @@
           <span class="sr-company">Reliance Industries<span class="ticker">RELIANCE</span></span>
           <span class="sr-num">2,946.10</span>
           <span class="sr-change pos">+1.42%</span>
-          <span class="sr-num">19,94,200</span>
-          <span class="sr-num">24.6</span>
+          <span class="sr-num sr-mktcap">19,94,200</span>
+          <span class="sr-num sr-pe">24.6</span>
           <span class="risk-badge moderate">Moderate</span>
         </div>
         <div class="sr-actions">
@@ -767,8 +928,8 @@
           <span class="sr-company">Tata Consultancy Services<span class="ticker">TCS</span></span>
           <span class="sr-num">4,102.35</span>
           <span class="sr-change neg">-0.68%</span>
-          <span class="sr-num">14,84,900</span>
-          <span class="sr-num">28.1</span>
+          <span class="sr-num sr-mktcap">14,84,900</span>
+          <span class="sr-num sr-pe">28.1</span>
           <span class="risk-badge low">Low</span>
         </div>
         <div class="sr-actions">
@@ -785,8 +946,8 @@
           <span class="sr-company">HDFC Bank<span class="ticker">HDFCBANK</span></span>
           <span class="sr-num">1,687.90</span>
           <span class="sr-change pos">+0.95%</span>
-          <span class="sr-num">12,83,400</span>
-          <span class="sr-num">19.4</span>
+          <span class="sr-num sr-mktcap">12,83,400</span>
+          <span class="sr-num sr-pe">19.4</span>
           <span class="risk-badge low">Low</span>
         </div>
         <div class="sr-actions">
@@ -803,8 +964,8 @@
           <span class="sr-company">Infosys<span class="ticker">INFY</span></span>
           <span class="sr-num">1,542.20</span>
           <span class="sr-change neg">-1.10%</span>
-          <span class="sr-num">6,40,700</span>
-          <span class="sr-num">23.8</span>
+          <span class="sr-num sr-mktcap">6,40,700</span>
+          <span class="sr-num sr-pe">23.8</span>
           <span class="risk-badge moderate">Moderate</span>
         </div>
         <div class="sr-actions">
@@ -818,11 +979,11 @@
 
       <div class="sr-row-wrap" data-risk="high">
         <div class="sr-row">
-          <span class="sr-company">Zomato<span class="ticker">ZOMATO</span></span>
+          <span class="sr-company">Eternal (Zomato)<span class="ticker">ETERNAL</span></span>
           <span class="sr-num">268.45</span>
           <span class="sr-change pos">+3.20%</span>
-          <span class="sr-num">2,58,300</span>
-          <span class="sr-num">142.0</span>
+          <span class="sr-num sr-mktcap">2,58,300</span>
+          <span class="sr-num sr-pe">142.0</span>
           <span class="risk-badge high">High</span>
         </div>
         <div class="sr-actions">
@@ -849,6 +1010,20 @@
       <button type="button" class="btn-ghost" id="riskModalAll">See everything instead</button>
     </div>
     <div class="modal-note">Risk tags are general category labels applied the same way to every visitor, based on typical volatility for that type of stock — not a personal recommendation for you.</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="calcModal">
+  <div class="modal-card calc-modal-card">
+    <button type="button" class="modal-close" id="calcModalClose" aria-label="Close">×</button>
+    <h3 id="calcModalTitle">Calculator</h3>
+    <p class="calc-modal-sub" id="calcModalSub"></p>
+    <div id="calcModalFields"></div>
+    <div class="calc-modal-result">
+      <span id="calcModalResultLabel">Result</span>
+      <span id="calcModalResultValue">—</span>
+    </div>
+    <div class="calc-modal-note" id="calcModalNote"></div>
   </div>
 </div>
 
@@ -902,37 +1077,37 @@
         <h3>P/E Ratio</h3>
         <p>Are you paying a fair price for what the company earns?</p>
         <div class="ratio-formula">Price ÷ Earnings per Share</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="pe">Open calculator →</button>
       </div>
       <div class="ratio-card">
         <h3>Current Ratio</h3>
         <p>Can the company cover its bills due within a year?</p>
         <div class="ratio-formula">Current Assets ÷ Current Liabilities</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="currentratio">Open calculator →</button>
       </div>
       <div class="ratio-card">
         <h3>ROE</h3>
         <p>How efficiently is your invested capital being used?</p>
         <div class="ratio-formula">Net Income ÷ Shareholder Equity</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="roe">Open calculator →</button>
       </div>
       <div class="ratio-card">
         <h3>XIRR</h3>
         <p>What did your actual investments return, given irregular deposits?</p>
         <div class="ratio-formula">Annualized rate across dated cash flows</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="xirr">Open calculator →</button>
       </div>
       <div class="ratio-card">
         <h3>YTM</h3>
         <p>What will a bond actually yield if held to maturity?</p>
         <div class="ratio-formula">Total return incl. coupons + price change</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="ytm">Open calculator →</button>
       </div>
       <div class="ratio-card">
         <h3>Risk-Reward Ratio</h3>
         <p>Is this trade worth the downside you're risking?</p>
         <div class="ratio-formula">Potential Profit ÷ Potential Loss</div>
-        <a class="ratio-open" href="#">Open calculator →</a>
+        <button type="button" class="ratio-open" data-calc="riskreward">Open calculator →</button>
       </div>
     </div>
   </div>
@@ -1009,7 +1184,174 @@
   </div>
 </section>
 
+
+
+<section class="phc" id="portfolio-health">
+  <div class="wrap">
+    <div class="phc-head">
+      <h2>Check your portfolio's health</h2>
+      <p>Enter what you hold. This shows you facts about the mix — concentration, risk balance, and how it might behave in a downturn — it does not tell you what to buy or sell.</p>
+    </div>
+
+    <div class="phc-grid">
+      <div class="phc-form">
+        <div id="phcRows"></div>
+        <button type="button" class="phc-add" id="phcAddRow">+ Add another holding</button>
+        <button type="button" class="btn-primary phc-analyze" id="phcAnalyze">Check portfolio health</button>
+      </div>
+
+      <div class="phc-results" id="phcResults">
+        <div class="phc-total" id="phcTotal">₹0</div>
+        <div class="phc-total-label">Total value of entered holdings</div>
+
+        <div class="phc-metric">
+          <div class="phc-metric-label"><span>Sector concentration</span></div>
+          <div class="phc-bar-track" id="phcSectorBar"></div>
+          <div class="phc-legend" id="phcSectorLegend"></div>
+        </div>
+
+        <div class="phc-metric">
+          <div class="phc-metric-label"><span>Risk-tag balance</span></div>
+          <div class="phc-bar-track" id="phcRiskBar"></div>
+          <div class="phc-legend" id="phcRiskLegend"></div>
+        </div>
+
+        <div class="phc-stress">
+          <h4>Hypothetical stress scenario</h4>
+          <div class="phc-stress-row"><span>If the broader market fell 10%</span><span id="phcStress10">—</span></div>
+          <div class="phc-stress-row"><span>If the broader market fell 20%</span><span id="phcStress20">—</span></div>
+        </div>
+
+        <ul class="phc-notes" id="phcNotes"></ul>
+
+        <div class="phc-disclaimer">This analysis is based only on the numbers you entered and general risk-tag assumptions — it is educational, not investment advice, and does not recommend buying, selling, or rebalancing any holding. For personalized rebalancing guidance, consult a SEBI-registered Investment Adviser.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ipo" id="ipos">
+  <div class="wrap">
+    <div class="ipo-head">
+      <h2>IPO calendar</h2>
+      <p>Companies currently raising money on the exchange — mainboard and SME, open, upcoming and recently closed.</p>
+    </div>
+    <div class="ipo-tabs" id="ipoTabs">
+      <button type="button" class="active" data-ipo-tab="open">Open</button>
+      <button type="button" data-ipo-tab="upcoming">Upcoming</button>
+      <button type="button" data-ipo-tab="closed">Closed</button>
+    </div>
+
+    <div class="ipo-list active" id="ipoList-open">
+      <div class="ipo-card">
+        <div><span class="ipo-status-badge open">Open</span> <span class="ipo-name">Sample Textiles Ltd<small>Mainboard · Closes in 2 days</small></span></div>
+        <div class="ipo-band">₹210 – ₹222</div>
+        <div class="ipo-meta"><span>Issue size: ₹480 Cr</span><span>Lot: 65 shares</span></div>
+      </div>
+      <div class="ipo-card">
+        <div><span class="ipo-status-badge open">Open</span> <span class="ipo-name">Sample Logistics SME<small>SME · Closes tomorrow</small></span></div>
+        <div class="ipo-band">₹88 – ₹92</div>
+        <div class="ipo-meta"><span>Issue size: ₹42 Cr</span><span>Lot: 1600 shares</span></div>
+      </div>
+    </div>
+
+    <div class="ipo-list" id="ipoList-upcoming">
+      <div class="ipo-card">
+        <div><span class="ipo-status-badge upcoming">Upcoming</span> <span class="ipo-name">Sample Fintech Ltd<small>Mainboard · Opens in 6 days</small></span></div>
+        <div class="ipo-band">Band TBA</div>
+        <div class="ipo-meta"><span>Issue size: ₹1,200 Cr (est.)</span></div>
+      </div>
+    </div>
+
+    <div class="ipo-list" id="ipoList-closed">
+      <div class="ipo-card">
+        <div><span class="ipo-status-badge closed">Closed</span> <span class="ipo-name">Sample Pharma Ltd<small>Mainboard · Listed last week</small></span></div>
+        <div class="ipo-band">₹310 – ₹325</div>
+        <div class="ipo-meta"><span>Listing gain: +18%</span></div>
+      </div>
+    </div>
+
+    <div class="ipo-disclaimer">IPO listings shown here are sample placeholders for this demo, not real current issues. Apply through your own broker or UPI — this site does not accept applications, and nothing here is a recommendation to subscribe or avoid any issue. Read the prospectus before applying.</div>
+  </div>
+</section>
+
+<section class="premarket" id="premarket">
+  <div class="wrap">
+    <div class="premarket-head">
+      <h2>Pre-market session</h2>
+      <p>Before regular trading opens, NSE runs a 15-minute call auction where buy and sell orders are matched to set an opening price — no continuous trading happens yet.</p>
+    </div>
+    <div class="premarket-window"><span class="dot"></span>9:00 – 9:15 AM IST, Monday to Friday</div>
+    <div class="premarket-cols">
+      <div class="premarket-col gainers">
+        <h3>Top gainers (indicative)</h3>
+        <div class="pm-row"><span class="pm-name">Sample Motors<small>NSE</small></span><span class="pm-chg pos">+4.2%</span></div>
+        <div class="pm-row"><span class="pm-name">Sample Energy<small>NSE</small></span><span class="pm-chg pos">+3.1%</span></div>
+        <div class="pm-row"><span class="pm-name">Sample Metals<small>NSE</small></span><span class="pm-chg pos">+2.6%</span></div>
+      </div>
+      <div class="premarket-col losers">
+        <h3>Top losers (indicative)</h3>
+        <div class="pm-row"><span class="pm-name">Sample Realty<small>NSE</small></span><span class="pm-chg neg">-3.8%</span></div>
+        <div class="pm-row"><span class="pm-name">Sample Textiles<small>NSE</small></span><span class="pm-chg neg">-2.4%</span></div>
+        <div class="pm-row"><span class="pm-name">Sample Media<small>NSE</small></span><span class="pm-chg neg">-1.9%</span></div>
+      </div>
+    </div>
+    <div class="premarket-note" id="premarketStamp">Sample data for this demo — not from a live feed yet. The % shown is the indicative equilibrium price (IEP) move, not where the stock will necessarily open once regular trading starts.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-brand">Paisa Pathshala</div>
+    <div class="foot-note">Educational content only — not investment advice. Always do your own research before investing.</div>
+  </div>
+</footer>
+
 <script>
+(function() {
+  function calcSip() {
+    var amt = parseFloat(document.getElementById('sipAmount').value) || 0;
+    var years = parseFloat(document.getElementById('sipYears').value) || 0;
+    var rate = parseFloat(document.getElementById('sipRate').value) || 0;
+    var months = years * 12;
+    var r = rate / 100 / 12;
+    var fv = r > 0 ? amt * ((Math.pow(1 + r, months) - 1) / r) * (1 + r) : amt * months;
+    document.getElementById('sipResult').textContent = '₹' + Math.round(fv).toLocaleString('en-IN');
+  }
+  ['sipAmount', 'sipYears', 'sipRate'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', calcSip);
+  });
+  calcSip();
+})();
+
+(function() {
+  var ipoTabs = document.querySelectorAll('#ipoTabs button');
+  ipoTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      ipoTabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.ipo-list').forEach(function(list) { list.classList.remove('active'); });
+      var target = document.getElementById('ipoList-' + tab.getAttribute('data-ipo-tab'));
+      if (target) target.classList.add('active');
+    });
+  });
+})();
+
+(function() {
+  var tabs = document.querySelectorAll('#watchTabs button');
+  var cards = document.querySelectorAll('#videoGrid .video-card');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var track = tab.getAttribute('data-track');
+      cards.forEach(function(card) {
+        card.style.display = (card.getAttribute('data-track') === track) ? '' : 'none';
+      });
+    });
+  });
+})();
+
 (function() {
   var questions = document.querySelectorAll('.quiz-q');
   var progress = document.getElementById('quizProgress');
@@ -1183,11 +1525,16 @@
     TCS: { name: 'TCS', price: 4102.35, sector: 'IT', risk: 'low' },
     HDFCBANK: { name: 'HDFC Bank', price: 1687.90, sector: 'Financials', risk: 'low' },
     INFY: { name: 'Infosys', price: 1542.20, sector: 'IT', risk: 'moderate' },
-    ZOMATO: { name: 'Zomato', price: 268.45, sector: 'Consumer Internet', risk: 'high' }
+    ETERNAL: { name: 'Eternal (Zomato)', price: 268.45, sector: 'Consumer Internet', risk: 'high' }
   };
   var sectorColors = { 'Energy': '#7A2E2E', 'IT': '#16233D', 'Financials': '#E2A73E', 'Consumer Internet': '#5B6472' };
   var riskColors = { low: '#2F6B3A', moderate: '#E2A73E', high: '#7A2E2E' };
   var riskBeta = { low: 0.6, moderate: 1.0, high: 1.6 };
+  window.__setLivePrices = function(live) {
+    Object.keys(live || {}).forEach(function(k) {
+      if (STOCKS[k] && live[k] && typeof live[k].price === 'number') STOCKS[k].price = live[k].price;
+    });
+  };
 
   var phcRows = document.getElementById('phcRows');
   var rowCount = 0;
@@ -1308,58 +1655,347 @@
     showQuestion(0);
   });
 })();
+
+(function() {
+  var configs = {
+    pe: {
+      title: 'P/E Ratio Calculator',
+      sub: 'How much you pay per rupee of the company\'s earnings.',
+      fields: [
+        { id: 'price', label: 'Current share price (₹)', value: 500 },
+        { id: 'eps', label: 'Earnings per share (₹)', value: 20 }
+      ],
+      resultLabel: 'P/E Ratio',
+      compute: function(v) {
+        if (v.eps === 0) return 'N/A';
+        return (v.price / v.eps).toFixed(2) + 'x';
+      },
+      note: 'A lower P/E can mean a cheaper stock relative to earnings — but always compare within the same sector.'
+    },
+    currentratio: {
+      title: 'Current Ratio Calculator',
+      sub: 'Can the company cover what it owes within a year?',
+      fields: [
+        { id: 'ca', label: 'Current assets (₹ Cr)', value: 500 },
+        { id: 'cl', label: 'Current liabilities (₹ Cr)', value: 250 }
+      ],
+      resultLabel: 'Current Ratio',
+      compute: function(v) {
+        if (v.cl === 0) return 'N/A';
+        return (v.ca / v.cl).toFixed(2);
+      },
+      note: 'A ratio above 1 generally means short-term assets exceed short-term liabilities.'
+    },
+    roe: {
+      title: 'ROE Calculator',
+      sub: 'How efficiently is shareholder capital being used?',
+      fields: [
+        { id: 'ni', label: 'Net income (₹ Cr)', value: 100 },
+        { id: 'eq', label: 'Shareholder equity (₹ Cr)', value: 800 }
+      ],
+      resultLabel: 'ROE',
+      compute: function(v) {
+        if (v.eq === 0) return 'N/A';
+        return ((v.ni / v.eq) * 100).toFixed(2) + '%';
+      },
+      note: 'Higher ROE generally means more profit generated per rupee of shareholder equity.'
+    },
+    xirr: {
+      title: 'XIRR Calculator',
+      sub: 'Your annualized return between one investment and one redemption date.',
+      fields: [
+        { id: 'invested', label: 'Amount invested (₹)', value: 100000 },
+        { id: 'investDays', label: 'Days ago you invested', value: 730 },
+        { id: 'current', label: 'Current / redemption value (₹)', value: 145000 }
+      ],
+      resultLabel: 'XIRR',
+      compute: function(v) {
+        var years = v.investDays / 365;
+        if (years <= 0 || v.invested <= 0) return 'N/A';
+        function npv(r) { return -v.invested + v.current / Math.pow(1 + r, years); }
+        var lo = -0.99, hi = 10, rate = 0.1;
+        for (var i = 0; i < 100; i++) {
+          rate = (lo + hi) / 2;
+          if (npv(rate) > 0) lo = rate; else hi = rate;
+        }
+        return (rate * 100).toFixed(2) + '%';
+      },
+      note: 'Solved using bisection on the cash-flow equation — same principle as Excel\'s XIRR() function, for a single investment and redemption.'
+    },
+    ytm: {
+      title: 'YTM Calculator',
+      sub: 'Approximate yield if a bond is held until it matures.',
+      fields: [
+        { id: 'face', label: 'Face value (₹)', value: 1000 },
+        { id: 'price', label: 'Current market price (₹)', value: 950 },
+        { id: 'coupon', label: 'Annual coupon rate (%)', value: 7 },
+        { id: 'years', label: 'Years to maturity', value: 5 }
+      ],
+      resultLabel: 'Approx. YTM',
+      compute: function(v) {
+        var c = (v.coupon / 100) * v.face;
+        if (v.years === 0) return 'N/A';
+        var ytm = (c + (v.face - v.price) / v.years) / ((v.face + v.price) / 2);
+        return (ytm * 100).toFixed(2) + '%';
+      },
+      note: 'This is the standard approximation formula, not the exact iterative solve — close enough for comparing bonds, not for pricing trades.'
+    },
+    riskreward: {
+      title: 'Risk-Reward Ratio Calculator',
+      sub: 'Is the potential gain worth the potential loss on this trade?',
+      fields: [
+        { id: 'entry', label: 'Entry price (₹)', value: 100 },
+        { id: 'target', label: 'Target price (₹)', value: 120 },
+        { id: 'stop', label: 'Stop-loss price (₹)', value: 90 }
+      ],
+      resultLabel: 'Risk-Reward Ratio',
+      compute: function(v) {
+        var reward = v.target - v.entry;
+        var risk = v.entry - v.stop;
+        if (risk <= 0) return 'N/A';
+        return '1 : ' + (reward / risk).toFixed(2);
+      },
+      note: 'Many traders look for at least 1:2 — risking ₹1 to potentially make ₹2 or more.'
+    }
+  };
+
+  var modal = document.getElementById('calcModal');
+  var fieldsEl = document.getElementById('calcModalFields');
+  var currentConfig = null;
+
+  function renderAndCompute() {
+    var values = {};
+    currentConfig.fields.forEach(function(f) {
+      var el = document.getElementById('cf_' + f.id);
+      values[f.id] = parseFloat(el.value) || 0;
+    });
+    document.getElementById('calcModalResultValue').textContent = currentConfig.compute(values);
+  }
+
+  function openCalc(key) {
+    var cfg = configs[key];
+    if (!cfg) return;
+    currentConfig = cfg;
+    document.getElementById('calcModalTitle').textContent = cfg.title;
+    document.getElementById('calcModalSub').textContent = cfg.sub;
+    document.getElementById('calcModalResultLabel').textContent = cfg.resultLabel;
+    document.getElementById('calcModalNote').textContent = cfg.note;
+    fieldsEl.innerHTML = '';
+    cfg.fields.forEach(function(f) {
+      var div = document.createElement('div');
+      div.className = 'calc-modal-field';
+      div.innerHTML = '<label>' + f.label + '</label><input type="number" id="cf_' + f.id + '" value="' + f.value + '">';
+      fieldsEl.appendChild(div);
+    });
+    fieldsEl.querySelectorAll('input').forEach(function(input) {
+      input.addEventListener('input', renderAndCompute);
+    });
+    renderAndCompute();
+    modal.classList.add('active');
+  }
+
+  document.querySelectorAll('[data-calc]').forEach(function(btn) {
+    btn.addEventListener('click', function() { openCalc(btn.getAttribute('data-calc')); });
+  });
+  document.getElementById('calcModalClose').addEventListener('click', function() {
+    modal.classList.remove('active');
+  });
+  modal.addEventListener('click', function(e) { if (e.target === this) modal.classList.remove('active'); });
+})();
+(function() {
+  // Live data loader: reads data/market-data.json (written every ~15 min by the GitHub Action).
+  // If the file is missing or a fetch fails, the sample values already on the page stay in place.
+  var DATA_URL = 'data/market-data.json';
+
+  function fmt(n, d) { return Number(n).toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function pct(n) { return (n >= 0 ? '+' : '') + Number(n).toFixed(2) + '%'; }
+  function isNum(n) { return typeof n === 'number' && isFinite(n); }
+
+  function buildTicker(data) {
+    var track = document.getElementById('tickerTrack');
+    if (!track) return;
+    var ix = data.indices || {}, cm = data.commodities || {};
+    var items = [];
+    function add(label, val, chg) { items.push({ label: label, val: val, chg: chg }); }
+    if (ix.nifty50 && isNum(ix.nifty50.value)) add('NIFTY 50', fmt(ix.nifty50.value, 2), ix.nifty50.change_pct);
+    if (ix.sensex && isNum(ix.sensex.value)) add('SENSEX', fmt(ix.sensex.value, 2), ix.sensex.change_pct);
+    if (cm.gold_10g && isNum(cm.gold_10g.value)) add('GOLD (10g)', '₹' + fmt(cm.gold_10g.value, 0), cm.gold_10g.change_pct);
+    if (cm.silver_kg && isNum(cm.silver_kg.value)) add('SILVER (kg)', '₹' + fmt(cm.silver_kg.value, 0), cm.silver_kg.change_pct);
+    // CPI inflation only changes every few months — keep the manually maintained item from the page
+    var cpi = null;
+    track.querySelectorAll('.ticker-item').forEach(function(el) {
+      if (!cpi && el.textContent.indexOf('CPI') !== -1) cpi = el.cloneNode(true);
+    });
+    var sectors = [['NIFTY IT', 'niftyit'], ['NIFTY BANK', 'niftybank'], ['NIFTY AUTO', 'niftyauto']];
+    var sectorItems = [];
+    sectors.forEach(function(s) {
+      if (ix[s[1]] && isNum(ix[s[1]].change_pct)) sectorItems.push({ label: s[0], val: '', chg: ix[s[1]].change_pct });
+    });
+    if (items.length + sectorItems.length < 2) return; // not enough live data — keep the sample ticker
+
+    function node(it) {
+      var el = document.createElement('span'); el.className = 'ticker-item';
+      var l = document.createElement('span'); l.className = 'ti-label'; l.textContent = it.label; el.appendChild(l);
+      if (it.val) { var v = document.createElement('span'); v.className = 'ti-val'; v.textContent = it.val; el.appendChild(v); }
+      if (isNum(it.chg)) {
+        var c = document.createElement('span'); c.className = 'ti-chg ' + (it.chg >= 0 ? 'pos' : 'neg'); c.textContent = pct(it.chg); el.appendChild(c);
+      }
+      return el;
+    }
+    var nodes = items.map(node);
+    if (cpi) nodes.push(cpi);
+    sectorItems.forEach(function(it) { nodes.push(node(it)); });
+    track.innerHTML = '';
+    for (var round = 0; round < 2; round++) {           // duplicated once so the scroll loops seamlessly
+      nodes.forEach(function(n) { track.appendChild(round === 0 ? n : n.cloneNode(true)); });
+    }
+  }
+
+  function updateScreener(data) {
+    var stocks = data.stocks || {}, touched = false;
+    document.querySelectorAll('.sr-row-wrap').forEach(function(wrap) {
+      var t = wrap.querySelector('.ticker'); if (!t) return;
+      var q = stocks[t.textContent.trim()];
+      if (!q || !isNum(q.price)) return;
+      var priceEl = wrap.querySelector('.sr-row > .sr-num:not(.sr-mktcap):not(.sr-pe)');
+      var chgEl = wrap.querySelector('.sr-change');
+      if (priceEl) priceEl.textContent = fmt(q.price, 2);
+      if (chgEl && isNum(q.change_pct)) {
+        chgEl.textContent = pct(q.change_pct);
+        chgEl.classList.toggle('pos', q.change_pct >= 0);
+        chgEl.classList.toggle('neg', q.change_pct < 0);
+      }
+      touched = true;
+    });
+    if (touched) {
+      var d = document.querySelector('.screener-disclaimer');
+      if (d) d.textContent = 'Prices update automatically from a free third-party source (Yahoo Finance) and may be delayed or occasionally unavailable — always verify on your broker before trading. Market cap and P/E are sample values. Risk tags are general category labels applied the same way to every visitor, not personalized advice. Broker links go to each platform\u2019s own site; this site does not execute, hold, or advise on trades. Trading in securities carries risk of loss.';
+    }
+    if (window.__setLivePrices) window.__setLivePrices(stocks);
+  }
+
+  function updateNews(data) {
+    var list = document.querySelector('.news-list');
+    var news = Array.isArray(data.news) ? data.news : [];
+    if (!list || !news.length) return;
+    list.innerHTML = '';
+    news.forEach(function(n) {
+      if (!n || !n.headline) return;
+      var hasLink = typeof n.link === 'string' && /^https?:\/\//.test(n.link);
+      var row = document.createElement(hasLink ? 'a' : 'div');
+      row.className = 'news-item';
+      if (hasLink) { row.href = n.link; row.target = '_blank'; row.rel = 'noopener noreferrer'; }
+      var t = document.createElement('span'); t.className = 'news-time'; t.textContent = n.time || '';
+      var h = document.createElement('span'); h.className = 'news-headline'; h.textContent = n.headline;
+      var s = document.createElement('span'); s.className = 'news-source'; s.textContent = n.source || '';
+      row.appendChild(t); row.appendChild(h); row.appendChild(s);
+      list.appendChild(row);
+    });
+    var d = document.querySelector('.news-disclaimer');
+    if (d) d.textContent = 'Headlines are pulled automatically from publishers\u2019 public RSS feeds and link back to the original source. They are not written or verified by us, and are not investment advice.';
+  }
+
+  function stamp(data) {
+    var live = document.querySelector('.news-live');
+    if (!live || !data.updated_at) return;
+    var when = new Date(data.updated_at);
+    if (isNaN(when.getTime())) return;
+    var txt = when.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+    var stale = (Date.now() - when.getTime()) > 36 * 3600 * 1000;
+    var dot = live.querySelector('.dot');
+    live.textContent = '';
+    if (dot) live.appendChild(dot);
+    live.appendChild(document.createTextNode(stale ? ' Data may be out of date — last updated ' + txt + ' IST' : ' Auto-refreshing · updated ' + txt + ' IST'));
+  }
+
+  function updateIPOs(data) {
+    var ipos = data.ipos;
+    if (!ipos || (!ipos.open && !ipos.upcoming && !ipos.closed)) return;
+    ['open', 'upcoming', 'closed'].forEach(function(bucket) {
+      var list = document.getElementById('ipoList-' + bucket);
+      var rows = ipos[bucket];
+      if (!list || !Array.isArray(rows) || !rows.length) return;
+      list.innerHTML = '';
+      rows.forEach(function(r) {
+        var card = document.createElement('div');
+        card.className = 'ipo-card';
+        var top = document.createElement('div');
+        var badge = document.createElement('span');
+        badge.className = 'ipo-status-badge ' + bucket;
+        badge.textContent = bucket.charAt(0).toUpperCase() + bucket.slice(1);
+        var name = document.createElement('span');
+        name.className = 'ipo-name';
+        name.textContent = ' ' + (r.name || '');
+        var small = document.createElement('small');
+        small.textContent = [r.category, r.start_date, r.end_date].filter(Boolean).join(' · ');
+        name.appendChild(small);
+        top.appendChild(badge); top.appendChild(name);
+        var band = document.createElement('div');
+        band.className = 'ipo-band';
+        band.textContent = r.price_band ? ('₹' + r.price_band) : 'Band TBA';
+        var meta = document.createElement('div');
+        meta.className = 'ipo-meta';
+        if (r.issue_size) { var s1 = document.createElement('span'); s1.textContent = 'Issue size: ' + r.issue_size; meta.appendChild(s1); }
+        card.appendChild(top); card.appendChild(band); card.appendChild(meta);
+        list.appendChild(card);
+      });
+    });
+    var d = document.querySelector('.ipo-disclaimer');
+    if (d) d.textContent = 'IPO data is pulled automatically from NSE\u2019s public listings and may be delayed or incomplete. Apply through your own broker or UPI \u2014 this site does not accept applications, and nothing here is a recommendation to subscribe or avoid any issue. Read the prospectus before applying.';
+  }
+
+  function updatePremarket(data) {
+    var pm = data.premarket;
+    if (!pm || (!Array.isArray(pm.gainers) && !Array.isArray(pm.losers))) return;
+    function fill(sel, rows) {
+      var col = document.querySelector(sel);
+      if (!col || !Array.isArray(rows) || !rows.length) return;
+      var rowsEl = col.querySelectorAll('.pm-row');
+      rowsEl.forEach(function(r) { r.remove(); });
+      rows.forEach(function(r) {
+        var div = document.createElement('div');
+        div.className = 'pm-row';
+        var name = document.createElement('span');
+        name.className = 'pm-name';
+        name.textContent = r.symbol || '';
+        var chg = document.createElement('span');
+        var val = typeof r.change_pct === 'number' ? r.change_pct : parseFloat(r.change_pct);
+        chg.className = 'pm-chg ' + (val >= 0 ? 'pos' : 'neg');
+        chg.textContent = (val >= 0 ? '+' : '') + val.toFixed(2) + '%';
+        div.appendChild(name); div.appendChild(chg);
+        col.appendChild(div);
+      });
+    }
+    fill('.premarket-col.gainers', pm.gainers);
+    fill('.premarket-col.losers', pm.losers);
+    var note = document.getElementById('premarketStamp');
+    if (note && pm.as_of) {
+      var when = new Date(pm.as_of);
+      var stale = !isNaN(when.getTime()) && (Date.now() - when.getTime()) > 3 * 3600 * 1000;
+      note.textContent = (stale
+        ? 'This is from the most recent 9:00\u20139:15 AM session (now over) \u2014 outside that window NSE does not publish new pre-open data. '
+        : 'From the live 9:00\u20139:15 AM pre-open session. ') +
+        'The % shown is the indicative equilibrium price (IEP) move, not guaranteed to be where the stock opens once regular trading starts.';
+    }
+  }
+
+  function load() {
+    if (typeof fetch !== 'function') return;
+    fetch(DATA_URL + '?_=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { if (!r.ok) throw new Error('no data file yet'); return r.json(); })
+      .then(function(data) {
+        try { buildTicker(data); } catch (e) {}
+        try { updateScreener(data); } catch (e) {}
+        try { updateNews(data); } catch (e) {}
+        try { updateIPOs(data); } catch (e) {}
+        try { updatePremarket(data); } catch (e) {}
+        try { stamp(data); } catch (e) {}
+      })
+      .catch(function() { /* keep sample values */ });
+  }
+  load();
+  setInterval(load, 5 * 60 * 1000);
+})();
 </script>
-
-<section class="phc" id="portfolio-health">
-  <div class="wrap">
-    <div class="phc-head">
-      <h2>Check your portfolio's health</h2>
-      <p>Enter what you hold. This shows you facts about the mix — concentration, risk balance, and how it might behave in a downturn — it does not tell you what to buy or sell.</p>
-    </div>
-
-    <div class="phc-grid">
-      <div class="phc-form">
-        <div id="phcRows"></div>
-        <button type="button" class="phc-add" id="phcAddRow">+ Add another holding</button>
-        <button type="button" class="btn-primary phc-analyze" id="phcAnalyze">Check portfolio health</button>
-      </div>
-
-      <div class="phc-results" id="phcResults">
-        <div class="phc-total" id="phcTotal">₹0</div>
-        <div class="phc-total-label">Total value of entered holdings</div>
-
-        <div class="phc-metric">
-          <div class="phc-metric-label"><span>Sector concentration</span></div>
-          <div class="phc-bar-track" id="phcSectorBar"></div>
-          <div class="phc-legend" id="phcSectorLegend"></div>
-        </div>
-
-        <div class="phc-metric">
-          <div class="phc-metric-label"><span>Risk-tag balance</span></div>
-          <div class="phc-bar-track" id="phcRiskBar"></div>
-          <div class="phc-legend" id="phcRiskLegend"></div>
-        </div>
-
-        <div class="phc-stress">
-          <h4>Hypothetical stress scenario</h4>
-          <div class="phc-stress-row"><span>If the broader market fell 10%</span><span id="phcStress10">—</span></div>
-          <div class="phc-stress-row"><span>If the broader market fell 20%</span><span id="phcStress20">—</span></div>
-        </div>
-
-        <ul class="phc-notes" id="phcNotes"></ul>
-
-        <div class="phc-disclaimer">This analysis is based only on the numbers you entered and general risk-tag assumptions — it is educational, not investment advice, and does not recommend buying, selling, or rebalancing any holding. For personalized rebalancing guidance, consult a SEBI-registered Investment Adviser.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap foot-row">
-    <div class="foot-brand">Paisa Pathshala</div>
-    <div class="foot-note">Educational content only — not investment advice. Always do your own research before investing.</div>
-  </div>
-</footer>
-
 </body>
 </html>
